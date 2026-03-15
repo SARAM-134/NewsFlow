@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     # --- App locali ---
     "accounts",
     "news",
+    "reports",
+    "interactions",
 ]
 
 
@@ -91,7 +93,7 @@ DATABASES = {
 # ---------------------------------------------------------------------------
 #  AUTH — Modello utente custom
 # ---------------------------------------------------------------------------
-AUTH_USER_MODEL = "accounts.Utente"     # ⚠️ OBBLIGATORIO prima della prima migrate
+AUTH_USER_MODEL = "accounts.Auth"     # ⚠️ OBBLIGATORIO prima della prima migrate
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
