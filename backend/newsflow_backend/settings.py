@@ -113,10 +113,14 @@ USE_TZ = True
 
 
 # ---------------------------------------------------------------------------
-#  FILE STATICI
+#  FILE STATICI E MEDIA
 # ---------------------------------------------------------------------------
+# URL per i file statici (CSS, JS, immagini del sito)
 STATIC_URL = "static/"
-
+# URL pubblico per accedere ai file caricati dagli utenti (es. immagini notizie)
+MEDIA_URL = "media/"
+# Percorso fisico nel filesystem dove Django salverà i file caricati
+MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
