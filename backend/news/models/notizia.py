@@ -57,3 +57,41 @@ class Notizia(models.Model):
 
     def __str__(self):
         return self.titolo
+from django.db import models
+
+class Notizia(models.Model):
+    """
+    Rappresenta la tabella 'Notizia' descritta nel PDF.
+    Entità principale che contiene le informazioni aggregate dai feed RSS.
+    """
+    fonte = models.ForeignKey(
+        'news.Fonte', 
+        on_delete=models.CASCADE, 
+        related_name='notizie'
+    )
+    categoria = models.ForeignKey(
+        'news.Categoria', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='notizie'
+    )
+    
+    titolo = models.CharField(max_length=255)
+    contenuto = models.TextField(blank=True)
+    url_originale = models.URLField(unique=True)
+    url_hash = models.CharField(max_length=64, unique=True)
+    data_pubblicazione = models.DateTimeField()
+    
+    # Campi elaborati dall'AI
+    extract_ai = models.TextField(blank=True, null=True)
+    sentiment_ai = models.CharField(max_length=50, blank=True, null=True)
+    provider_ai = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Notizia'
+        verbose_name_plural = 'Notizie'
+        ordering = ['-data_pubblicazione']
+
+    def __str__(self):
+        return self.titolo
