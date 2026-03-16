@@ -13,6 +13,6 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Le app registreranno i propri URL nei rispettivi urls.py
-    # path("api/auth/", include("accounts.urls")),
-    # path("api/", include("news.urls")),
+    path("api/auth/", include("accounts.urls")),
+    path("api/", include("news.urls")),
 ]
