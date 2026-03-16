@@ -151,6 +151,9 @@ REST_FRAMEWORK = {
 # ---------------------------------------------------------------------------
 #  SIMPLE JWT
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+#  SIMPLE JWT
+# ---------------------------------------------------------------------------
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=int(os.environ.get("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", 60))
@@ -162,3 +165,22 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,       # il vecchio refresh viene invalidato
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+# ---------------------------------------------------------------------------
+#  CONFIGURAZIONE EMAIL E FRONTEND (Reset Password)
+# ---------------------------------------------------------------------------
+PASSWORD_RESET_FRONTEND_URL = os.environ.get(
+    "PASSWORD_RESET_FRONTEND_URL", 
+    "http://localhost:3000/reset-password/"
+)
+
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND", 
+    "django.core.mail.backends.console.EmailBackend" # Stampa in console di default per sviluppo locale
+)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "tuamail@gmail.com")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "latuapassword")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
