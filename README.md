@@ -159,6 +159,92 @@ L'API è esposta in formato RESTful tramite Django REST Framework (DRF) e autent
 
 ---
 
+## 🔐 Modulo `accounts` — Implementazione Attuale
+
+> Dettagli tecnici dello stato implementativo del modulo di autenticazione e gestione utenti.
+
+### Modelli (`accounts/models/`)
+
+Il modulo usa **due modelli separati** collegati da una relazione 1:1:
+
+**`Auth`** (in `auth.py`) — estende `AbstractBaseUser` + `PermissionsMixin`
+
+| Campo | Tipo | Note |
+|-------|------|------|
+| `email` | EmailField unique | `USERNAME_FIELD` — usato per il login |
+| `username` | CharField unique | campo obbligatorio (`REQUIRED_FIELDS`) |
+| `password` | ereditato | hash gestito da Django |
+| `token` | CharField nullable | token API opzionale |
+| `is_staff` | BooleanField | accesso al pannello admin |
+| `is_active` | BooleanField | usato per il soft-delete |
+| `date_joined` | DateTimeField | data di registrazione |
+
+Manager custom `AuthManager` con `create_user()` e `create_superuser()`.
+
+**`Utente`** (in `utente.py`) — profilo applicativo
+
+| Campo | Tipo | Note |
+|-------|------|------|
+| `auth` | OneToOneField → Auth | `related_name='profilo'`, `CASCADE` |
+| `role` | CharField | `'giornalista'` (default) · `'admin'` |
+| `nome` | CharField | blank=True |
+| `cognome` | CharField | blank=True |
+
+---
+
+### Serializers (`accounts/serializers.py`)
+
+| Classe | Scopo |
+|--------|-------|
+| `CustomTokenObtainPairSerializer` | Aggiunge `role` nel payload del JWT |
+| `UtenteSerializer` | GET/PATCH profilo — `email` e `role` in sola lettura |
+| `PublicRegistrationSerializer` | Crea `Auth` + `Utente` con `role='giornalista'` |
+| `PasswordResetRequestSerializer` | Valida email per la richiesta di reset |
+| `PasswordResetConfirmSerializer` | Valida uid/token e salva la nuova password |
+
+---
+
+### Views e Permessi (`accounts/views.py`)
+
+**Permesso custom `IsAdminRole`:** verifica `request.user.profilo.role == 'admin'`.
+
+| View | Metodo | Endpoint | Permesso |
+|------|--------|----------|----------|
+| `CustomTokenObtainPairView` | POST | `/api/auth/login/` | 🔓 Pubblico |
+| `RegisterView` | POST | `/api/auth/register/` | 🔓 Pubblico |
+| `PasswordResetRequestView` | POST | `/api/auth/password-reset/` | 🔓 Pubblico |
+| `PasswordResetConfirmView` | POST | `/api/auth/password-reset-confirm/` | 🔓 Pubblico |
+| `UserProfileView` | GET / PATCH | `/api/auth/me/` | 🔒 IsAuthenticated |
+| `AdminUserManagementView` | GET | `/api/auth/users/` | 🔒 IsAdminRole |
+| `AdminUserDetailView` | GET / PUT / PATCH | `/api/auth/users/<pk>/` | 🔒 IsAdminRole |
+| `AdminUserDetailView` | DELETE | `/api/auth/users/<pk>/` | 🔒 IsAdminRole — soft delete |
+
+> Il **soft delete** non cancella il record dal DB: imposta `auth.is_active = False`.
+
+---
+
+### Configurazione JWT (`settings.py`)
+
+| Parametro | Valore |
+|-----------|--------|
+| `ACCESS_TOKEN_LIFETIME` | 60 minuti |
+| `REFRESH_TOKEN_LIFETIME` | 7 giorni |
+| `ROTATE_REFRESH_TOKENS` | `True` |
+| `BLACKLIST_AFTER_ROTATION` | `True` |
+
+Il payload JWT include il campo custom `role` iniettato da `CustomTokenObtainPairSerializer`.
+
+---
+
+### Admin Django (`accounts/admin.py`)
+
+Sono registrati entrambi i modelli:
+
+- **`AuthAdmin`** — estende `UserAdmin`, mostra email, username, is_staff, is_active, date_joined
+- **`UtenteAdmin`** — espone i campi di `Auth` tramite metodi `@admin.display` (email, is_active, date_joined), con filtri su `role` e `auth__is_active`
+
+---
+
 ## 🎯 Guida Passo-Passo per Ruoli (Action Plan - 14 Giorni)
 
 Di seguito la ripartizione tecnica e temporale dei compiti da finalizzare entro i 2 Sprint.

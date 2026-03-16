@@ -1,10 +1,71 @@
 from django.contrib import admin
-from .models import Utente
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from .models.auth import Auth
+from .models.utente import Utente
 
 
+# ─────────────────────────────────────────────
+#  AuthAdmin
+# ─────────────────────────────────────────────
+@admin.register(Auth)
+class AuthAdmin(BaseUserAdmin):
+    """
+    Pannello admin per il modello Auth (custom AbstractBaseUser).
+    """
+    list_display  = ("email", "username", "is_staff", "is_active", "date_joined")
+    list_filter   = ("is_staff", "is_active")
+    search_fields = ("email", "username")
+    ordering      = ("-date_joined",)
+
+    # Campi visualizzati nella pagina di dettaglio
+    fieldsets = (
+        (None,           {"fields": ("email", "username", "password")}),
+        ("Permessi",     {"fields": ("is_staff", "is_active", "is_superuser",
+                                     "groups", "user_permissions")}),
+        ("Date",         {"fields": ("date_joined", "last_login")}),
+    )
+
+    # Campi visualizzati nella pagina di creazione
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields":  ("email", "username", "password1", "password2",
+                        "is_staff", "is_active"),
+        }),
+    )
+
+
+# ─────────────────────────────────────────────
+#  UtenteAdmin  (Profilo)
+# ─────────────────────────────────────────────
 @admin.register(Utente)
 class UtenteAdmin(admin.ModelAdmin):
-    list_display = ("email", "ruolo", "is_active", "data_registrazione")
-    list_filter = ("ruolo", "is_active", "settore")
-    search_fields = ("email", "nome", "cognome")
-    ordering = ("-data_registrazione",)
+    """
+    Pannello admin per il modello Utente (profilo collegato ad Auth).
+    I campi di Auth vengono esposti tramite metodi helper.
+    """
+
+    # ── colonne helper che leggono dall'oggetto Auth collegato ──
+    @admin.display(description="Email", ordering="auth__email")
+    def get_email(self, obj):
+        return obj.auth.email
+
+    @admin.display(description="Attivo", boolean=True, ordering="auth__is_active")
+    def get_is_active(self, obj):
+        return obj.auth.is_active
+
+    @admin.display(description="Data registrazione", ordering="auth__date_joined")
+    def get_date_joined(self, obj):
+        return obj.auth.date_joined
+
+    # ── configurazione pannello ──
+    list_display  = ("get_email", "role", "nome", "cognome",
+                     "get_is_active", "get_date_joined")
+    list_filter   = ("role", "auth__is_active")
+    search_fields = ("auth__email", "nome", "cognome")
+    ordering      = ("-auth__date_joined",)
+
+    # Campi del form di dettaglio/modifica
+    fields = ("auth", "role", "nome", "cognome")
+    readonly_fields = ("auth",)
