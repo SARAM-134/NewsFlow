@@ -26,7 +26,7 @@ class Notizia(models.Model):
     )
     
     titolo = models.CharField(max_length=255)
-    contenuto = models.TextField(blank=True)
+    contenuto_originale = models.TextField(blank=True)
     url_originale = models.URLField(unique=True)
     url_hash = models.CharField(max_length=64, unique=True)
     immagine_url = models.URLField(blank=True, null=True) # URL estratto dal feed o dall'AI
@@ -40,6 +40,8 @@ class Notizia(models.Model):
         null=True
     )
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
+    ai_processata = models.BooleanField(default=False)
+    tags = models.ManyToManyField('news.Tag', related_name='notizie', blank=True)
 
     class Meta:
         verbose_name = 'Notizia'
