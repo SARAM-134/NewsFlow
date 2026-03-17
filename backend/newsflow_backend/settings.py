@@ -196,6 +196,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # ---------------------------------------------------------------------------
 AI_CONFIG = {
     "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
+<<<<<<< HEAD
     "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
+=======
+    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-1.5-flash"),
+>>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
     "MAX_LINES_SUMMARY": 3,
 }

@@ -29,7 +29,11 @@ class Notizia(models.Model):
     contenuto_originale = models.TextField(blank=True)
     url_originale = models.URLField(unique=True)
     url_hash = models.CharField(max_length=64, unique=True)
+<<<<<<< HEAD
     immagine_url = models.URLField(max_length=1000, blank=True, null=True)
+=======
+    immagine_url = models.URLField(blank=True, null=True) # URL estratto dal feed o dall'AI
+>>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
     data_pubblicazione = models.DateTimeField()
     
     extract_ai = models.TextField(blank=True, null=True)

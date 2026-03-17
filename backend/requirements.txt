@@ -4,8 +4,11 @@ djangorestframework-simplejwt>=5.3
 django-cors-headers>=4.3
 feedparser>=6.0
 google-generativeai>=0.4.0
+<<<<<<< HEAD
 feedparser
 trafilatura
 google-generativeai
 python-dotenv
 django-apscheduler
+=======
+>>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
