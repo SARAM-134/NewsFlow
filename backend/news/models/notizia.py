@@ -45,6 +45,10 @@ class Notizia(models.Model):
     )
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
     ai_processata = models.BooleanField(default=False)
+<<<<<<< HEAD
+=======
+    tags = models.ManyToManyField('news.Tag', related_name='notizie', blank=True)
+>>>>>>> 280115d (feat: Add `Notizia` model, `fetch_news` command for RSS parsing, and `process_ai` command for AI-driven news enrichment.)
 
     class Meta:
         verbose_name = 'Notizia'

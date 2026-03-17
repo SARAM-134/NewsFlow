@@ -78,8 +78,12 @@ class Command(BaseCommand):
             - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti tecnologici).
 
             Titolo: {notizia.titolo}
+<<<<<<< HEAD
             Contenuto: {notizia.contenuto}
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+            Contenuto: {notizia.contenuto_originale}
+>>>>>>> 280115d (feat: Add `Notizia` model, `fetch_news` command for RSS parsing, and `process_ai` command for AI-driven news enrichment.)
             """
 
             try:
@@ -103,7 +107,7 @@ class Command(BaseCommand):
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
 =======
                 # 2. Aggiornamento Notizia
-                notizia.extract_ai = data.get('riassunto', '')
+                notizia.riassunto_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'Neutro')
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
                 notizia.provider_ai = "Google Gemini"
