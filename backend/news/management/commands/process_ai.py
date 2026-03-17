@@ -37,7 +37,7 @@ class Command(BaseCommand):
             - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti tecnologici).
 
             Titolo: {notizia.titolo}
-            Contenuto: {notizia.contenuto}
+            Contenuto: {notizia.contenuto_originale}
             """
 
             try:
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 data = json.loads(raw_text)
 
                 # 2. Aggiornamento Notizia
-                notizia.extract_ai = data.get('riassunto', '')
+                notizia.riassunto_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'Neutro')
                 notizia.provider_ai = "Google Gemini"
                 notizia.ai_processata = True
