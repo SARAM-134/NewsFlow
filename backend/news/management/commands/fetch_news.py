@@ -58,7 +58,7 @@ class Command(BaseCommand):
                     fonte=fonte,
                     categoria=fonte.categoria, # Eredita la categoria della fonte
                     titolo=getattr(entry, 'title', 'Senza Titolo'),
-                    contenuto=entry.get('summary', entry.get('description', '')),
+                    contenuto_originale=entry.get('summary', entry.get('description', '')),
                     url_originale=url,
                     url_hash=url_hash,
                     immagine_url=img_url,
