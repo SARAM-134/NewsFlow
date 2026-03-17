@@ -155,9 +155,6 @@ REST_FRAMEWORK = {
 # ---------------------------------------------------------------------------
 #  SIMPLE JWT
 # ---------------------------------------------------------------------------
-# ---------------------------------------------------------------------------
-#  SIMPLE JWT
-# ---------------------------------------------------------------------------
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=int(os.environ.get("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", 60))
@@ -188,3 +185,12 @@ EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "tuamail@gmail.com")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "latuapassword")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# ---------------------------------------------------------------------------
+#  AI CONFIGURATION (Gemini / LLM)
+# ---------------------------------------------------------------------------
+AI_CONFIG = {
+    "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
+    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-1.5-flash"),
+    "MAX_LINES_SUMMARY": 3,
+}

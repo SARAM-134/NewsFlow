@@ -29,6 +29,7 @@ class Notizia(models.Model):
     contenuto = models.TextField(blank=True)
     url_originale = models.URLField(unique=True)
     url_hash = models.CharField(max_length=64, unique=True)
+    immagine_url = models.URLField(blank=True, null=True) # URL estratto dal feed o dall'AI
     data_pubblicazione = models.DateTimeField()
     
     extract_ai = models.TextField(blank=True, null=True)
