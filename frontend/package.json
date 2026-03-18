@@ -2,10 +2,13 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 =======
 >>>>>>> 018fe9f (Add setup instructions to package.json)
+=======
+>>>>>>> 2c23162 (Update package.json)
 {
   "name": "frontend",
   "private": true,
@@ -81,4 +84,10 @@ npm run dev
 >>>>>>> c3a54d8 (Mary: Inizializzato frontend e creata Navbar)
 =======
 >>>>>>> db91658 (Add setup instructions to package.json)
+<<<<<<< HEAD
 >>>>>>> 018fe9f (Add setup instructions to package.json)
+=======
+=======
+
+>>>>>>> 3506a13 (Update package.json)
+>>>>>>> 2c23162 (Update package.json)
