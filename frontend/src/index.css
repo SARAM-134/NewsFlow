@@ -3,6 +3,7 @@
 =======
 >>>>>>> dbf9fb2 (Prima pagina completata)
 @import "tailwindcss";
+
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -10,6 +11,7 @@
 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
+<<<<<<< HEAD
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 <<<<<<< HEAD
@@ -22,3 +24,10 @@
 =======
 }
 >>>>>>> dbf9fb2 (Prima pagina completata)
+=======
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+>>>>>>> 20ac6ca (Mary: Inizializzato frontend e creata Navbar)
