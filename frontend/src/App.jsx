@@ -25,9 +25,9 @@ const notizieDalDatabase = [
     estratto_ai: "Una partita difficile che si conclude con un 2-0. La difesa ha faticato molto.",
     categoria: "Sport",
     sentiment: "negativo",
-    immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500" 
+    immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500"
   }
-]; 
+];
 
 function App() {
   return (
@@ -37,13 +37,13 @@ function App() {
         <InputBar />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {notizieDalDatabase.map((notizia) => (
-            <NewsCard 
-              key={notizia.id} 
-              titolo={notizia.titolo} 
+            <NewsCard
+              key={notizia.id}
+              titolo={notizia.titolo}
               riassunto={notizia.estratto_ai}
               categoria={notizia.categoria}
               immagine={notizia.immagine}
-              sentiment={notizia.sentiment} 
+              sentiment={notizia.sentiment}
             />
           ))}
         </div>
