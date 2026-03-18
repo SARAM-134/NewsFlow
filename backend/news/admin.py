@@ -3,6 +3,7 @@ from .models.categoria import Categoria
 from .models.fonte import Fonte
 from .models.notizia import Notizia
 from .models.tag import Tag
+<<<<<<< HEAD
 from django.contrib import messages
 
 @admin.action(description="Genera Briefing AI (Tutte le Categorie)")
@@ -15,12 +16,17 @@ def action_genera_briefing(modeladmin, request, queryset):
         modeladmin.message_user(request, "I Briefing sono stati generati con successo tramite lo script!", messages.SUCCESS)
     except Exception as e:
         modeladmin.message_user(request, f"Errore durante la generazione: {str(e)}", messages.WARNING)
+=======
+>>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
     list_display = ("nome", "slug", "colore")
     prepopulated_fields = {"slug": ("nome",)}
+<<<<<<< HEAD
     actions = [action_genera_briefing]
+=======
+>>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -41,4 +47,7 @@ class NotiziaAdmin(admin.ModelAdmin):
     list_filter = ('fonte', 'categoria', 'sentiment_ai', 'data_pubblicazione')
     search_fields = ('titolo', 'contenuto')
     date_hierarchy = 'data_pubblicazione'
+<<<<<<< HEAD
     filter_horizontal = ('tags',)
+=======
+>>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
