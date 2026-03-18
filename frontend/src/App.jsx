@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 =======
@@ -13,6 +14,8 @@
 >>>>>>> fe9f415 (Prima pagina completata)
 =======
 >>>>>>> 3632389 (modifiche)
+=======
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 import React, { useRef, useState } from 'react';
 
 =======
@@ -729,11 +732,31 @@ function App() {
         </section>
       </main>
 >>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
+<<<<<<< HEAD
 >>>>>>> f9d6553 (Mary: Aggiunta la prima NewsCard per le notizie)
+=======
+=======
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-2xl shadow-xl text-center">
+        <h1 className="text-4xl font-extrabold text-blue-600 mb-4">
+          NewsFlow 🚀
+        </h1>
+        <p className="text-gray-600 text-lg">
+          Benvenuta Mary! Tailwind è attivo e funzionante.
+        </p>
+        <button className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition duration-300">
+          Iniziamo a creare!
+        </button>
+      </div>
+>>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
     </div>
-  );
+  )
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export default App
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
@@ -746,3 +769,6 @@ export default App
 =======
 export default App;
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+export default App
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)

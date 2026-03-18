@@ -3,12 +3,17 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 =======
 >>>>>>> 018fe9f (Add setup instructions to package.json)
 =======
 >>>>>>> 2c23162 (Update package.json)
+=======
+=======
+>>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 {
   "name": "frontend",
   "private": true,
@@ -24,15 +29,22 @@
     "react": "^19.2.4",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"
 =======
     "react-dom": "^19.2.4"
+<<<<<<< HEAD
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 =======
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"
 >>>>>>> d4112a9 (modifiche)
+=======
+>>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -53,8 +65,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 018fe9f (Add setup instructions to package.json)
+=======
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 }
 =======
 # Installa le dipendenze necessarie (le librerie che servono a React)
@@ -90,4 +105,10 @@ npm run dev
 =======
 
 >>>>>>> 3506a13 (Update package.json)
+<<<<<<< HEAD
 >>>>>>> 2c23162 (Update package.json)
+=======
+=======
+}
+>>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)

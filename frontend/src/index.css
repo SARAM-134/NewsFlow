@@ -2,12 +2,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> dbf9fb2 (Prima pagina completata)
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 =======
 >>>>>>> fe9f415 (Prima pagina completata)
+=======
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 @import "tailwindcss";
 
 =======
@@ -56,4 +59,12 @@
     scrollbar-width: none;  /* Firefox */
 }
 >>>>>>> fdbac5e (Prima pagina completata)
+<<<<<<< HEAD
 >>>>>>> fe9f415 (Prima pagina completata)
+=======
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+>>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
