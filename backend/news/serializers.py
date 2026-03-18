@@ -20,13 +20,9 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class NotiziaSerializer(serializers.ModelSerializer):
-    """
-    Serializer principale per le notizie. 
-    In lettura, espande categoria, fonte e tag per una visualizzazione completa.
-    """
     categoria_dettaglio = CategoriaSerializer(source='categoria', read_only=True)
     fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
-    tags_dettaglio = TagSerializer(source='tag_set', many=True, read_only=True) # Usiamo tag_set se è ManyToMany o legame inverso
+    tags_dettaglio = TagSerializer(source='tags', many=True, read_only=True) 
 
     class Meta:
         model = Notizia
@@ -35,5 +31,5 @@ class NotiziaSerializer(serializers.ModelSerializer):
             'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
             'categoria', 'categoria_dettaglio', 
             'fonte', 'fonte_dettaglio',
-            'tags_dettaglio'
+            'tags', 'tags_dettaglio'
         ]

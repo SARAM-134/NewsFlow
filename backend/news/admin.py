@@ -28,3 +28,4 @@ class NotiziaAdmin(admin.ModelAdmin):
     list_filter = ('fonte', 'categoria', 'sentiment_ai', 'data_pubblicazione')
     search_fields = ('titolo', 'contenuto')
     date_hierarchy = 'data_pubblicazione'
+    filter_horizontal = ('tags',)
