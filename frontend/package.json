@@ -29,3 +29,8 @@
     "vite": "^8.0.0"
   }
 }
+# Installa le dipendenze necessarie (le librerie che servono a React)
+npm install
+
+# Fai partire il progetto per vedere se funziona
+npm run dev
