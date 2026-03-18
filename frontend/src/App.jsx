@@ -6,6 +6,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 =======
@@ -16,6 +17,8 @@
 >>>>>>> 3632389 (modifiche)
 =======
 >>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
+=======
+>>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
 import React, { useRef, useState } from 'react';
 
 =======
@@ -48,11 +51,16 @@ import React, { useRef } from 'react';
 =======
 import React, { useRef, useState } from 'react';
 >>>>>>> b20b985 (modifiche)
+=======
+>>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
 import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
 const notizieDalDatabase = [
   {
     id: 1,
@@ -76,6 +84,7 @@ const notizieDalDatabase = [
     estratto_ai: "Una partita difficile che si conclude con un 2-0. La difesa ha faticato molto.",
     categoria: "Sport",
     sentiment: "negativo",
+<<<<<<< HEAD
     immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500" 
   }
 ]; 
@@ -751,7 +760,35 @@ function App() {
         </button>
       </div>
 >>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
+<<<<<<< HEAD
 >>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
+=======
+=======
+    immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500"
+  }
+];
+
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Navbar />
+      <main className="p-8">
+        <InputBar />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {notizieDalDatabase.map((notizia) => (
+            <NewsCard
+              key={notizia.id}
+              titolo={notizia.titolo}
+              riassunto={notizia.estratto_ai}
+              categoria={notizia.categoria}
+              immagine={notizia.immagine}
+              sentiment={notizia.sentiment}
+            />
+          ))}
+        </div>
+      </main>
+>>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
     </div>
   )
 }

@@ -67,12 +67,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 018fe9f (Add setup instructions to package.json)
 =======
 >>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 =======
 >>>>>>> aa12271 (Add setup instructions to package.json)
+=======
+>>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
 }
 =======
 # Installa le dipendenze necessarie (le librerie che servono a React)
@@ -129,4 +132,10 @@ npm run dev
 =======
 =======
 >>>>>>> 3522f70 (Update package.json)
+<<<<<<< HEAD
 >>>>>>> a24521d (Update package.json)
+=======
+=======
+}
+>>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
