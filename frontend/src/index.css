@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> dbf9fb2 (Prima pagina completata)
+=======
+>>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 @import "tailwindcss";
 
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
@@ -30,4 +33,10 @@
     scrollbar-width: none;
     /* Firefox */
 }
+<<<<<<< HEAD
 >>>>>>> 20ac6ca (Mary: Inizializzato frontend e creata Navbar)
+=======
+=======
+@import "tailwindcss";
+>>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
+>>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)

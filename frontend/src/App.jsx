@@ -1,6 +1,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 import React, { useRef, useState } from 'react';
 
 =======
@@ -14,6 +17,9 @@ import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 
 import NewsCard from './components/NewsCard';
+=======
+import Navbar from "./components/Navbar";
+>>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -414,6 +420,7 @@ function App() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-white font-sans antialiased">
       <Navbar />
       <main className="max-w-7xl mx-auto px-6 pb-24">
@@ -476,6 +483,7 @@ function App() {
         </section>
 >>>>>>> d4112a9 (modifiche)
       </main>
+<<<<<<< HEAD
 
     </div>
 <<<<<<< HEAD
@@ -502,10 +510,21 @@ function App() {
           Iniziamo a creare!
         </button>
       </div>
+=======
+=======
+    <div>
+      <Navbar /> {/* Questo richiama il tuo disegno blu! */}
+      <div className="p-10 text-center">
+         <h1 className="text-3xl font-bold">NewsFlow 🚀</h1>
+         <p>Benvenuta Mary!</p>
+      </div>
+>>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
+>>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
     </div>
-  )
+  );
 }
 
+<<<<<<< HEAD
 export default App
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 =======
@@ -514,3 +533,6 @@ export default App
 
 export default App
 >>>>>>> 6d50b4c (Mary: Inizializzato frontend e creata Navbar)
+=======
+export default App;
+>>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)

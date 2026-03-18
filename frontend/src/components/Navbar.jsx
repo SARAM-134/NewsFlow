@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 
 function Navbar() {
@@ -66,6 +67,19 @@ function Navbar() {
 <<<<<<< HEAD
         <button className="bg-black text-white px-7 py-2.5 rounded-full text-[9px] uppercase tracking-[0.25em] font-semibold hover:bg-gray-800 hover:shadow-lg transition-all active:scale-95">
           Accedi
+=======
+function Navbar() {
+  return (
+    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
+      <div className="text-2xl font-bold text-blue-600">
+        NewsFlow 🚀
+      </div>
+      <div className="space-x-6 text-gray-600 font-medium">
+        <a href="#" className="hover:text-blue-500">Home</a>
+        <a href="#" className="hover:text-blue-500">Notizie</a>
+        <button className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+          Entra
+>>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
         </button>
 =======
         <div className="border-l border-gray-100 h-6 flex items-center pl-10">
