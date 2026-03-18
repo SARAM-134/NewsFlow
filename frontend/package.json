@@ -1,5 +1,8 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 {
   "name": "frontend",
   "private": true,
@@ -13,8 +16,12 @@
   },
   "dependencies": {
     "react": "^19.2.4",
+<<<<<<< HEAD
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"
+=======
+    "react-dom": "^19.2.4"
+>>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -31,6 +38,7 @@
     "tailwindcss": "^4.2.1",
     "vite": "^8.0.0"
   }
+<<<<<<< HEAD
 }
 =======
 # Installa le dipendenze necessarie (le librerie che servono a React)
@@ -42,3 +50,6 @@ npm run dev
 =======
 
 >>>>>>> a3ca646 (Update package.json)
+=======
+}
+>>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
