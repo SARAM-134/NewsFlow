@@ -1,10 +1,12 @@
 from django.db import models
 
 class Notizia(models.Model):
-    """
-    Rappresenta la tabella 'Notizia' descritta nel PDF.
-    Entità principale che contiene le informazioni aggregate dai feed RSS.
-    """
+    SENTIMENT_CHOICES = [
+        ('POSITIVE', 'Positive'),
+        ('NEGATIVE', 'Negative'),
+        ('NEUTRAL', 'Neutral'),
+    ]
+
     fonte = models.ForeignKey(
         'news.Fonte', 
         on_delete=models.CASCADE, 
@@ -17,6 +19,11 @@ class Notizia(models.Model):
         blank=True, 
         related_name='notizie'
     )
+    tags = models.ManyToManyField(
+        'news.Tag', 
+        related_name='notizie', 
+        blank=True
+    )
     
     titolo = models.CharField(max_length=255)
     contenuto = models.TextField(blank=True)
@@ -24,9 +31,13 @@ class Notizia(models.Model):
     url_hash = models.CharField(max_length=64, unique=True)
     data_pubblicazione = models.DateTimeField()
     
-    # Campi elaborati dall'AI
     extract_ai = models.TextField(blank=True, null=True)
-    sentiment_ai = models.CharField(max_length=50, blank=True, null=True)
+    sentiment_ai = models.CharField(
+        max_length=15, 
+        choices=SENTIMENT_CHOICES, 
+        blank=True, 
+        null=True
+    )
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:

@@ -33,7 +33,7 @@ class NotiziaListView(generics.ListAPIView):
     ordering = ['-data_pubblicazione']
 
     def get_queryset(self):
-        queryset = Notizia.objects.select_related('categoria', 'fonte').all()
+        queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
         
         # Filtri custom via Query Params
         categoria_id = self.request.query_params.get('categoria')
@@ -46,10 +46,7 @@ class NotiziaListView(generics.ListAPIView):
         return queryset
 
 class NotiziaDetailView(generics.RetrieveAPIView):
-    """Visualizza il dettaglio di una singola notizia."""
-    queryset = Notizia.objects.select_related('categoria', 'fonte').all()
+    queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
     serializer_class = NotiziaSerializer
     permission_classes = [permissions.AllowAny]
-
-# Nota: per la creazione via Web Scraper non esponiamo form pubblici.
-# Lo scraper userà comandi interni o API key specifiche (implementabili in futuro).
+    lookup_field = 'url_hash' 

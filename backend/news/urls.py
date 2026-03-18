@@ -8,5 +8,5 @@ urlpatterns = [
     
     # Rotte pubbliche per le Notizie
     path('notizie/', NotiziaListView.as_view(), name='notizia-list'),
-    path('notizie/<int:pk>/', NotiziaDetailView.as_view(), name='notizia-detail'),
+    path('notizie/<str:url_hash>/', NotiziaDetailView.as_view(), name='notizia-detail'),
 ]
