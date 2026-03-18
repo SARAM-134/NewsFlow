@@ -20,10 +20,15 @@ import NewsCard from './components/NewsCard';
 =======
 import Navbar from "./components/Navbar";
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
 =======
 import NewsCard from "./components/NewsCard"; // Prendi la figurina dalla scatola!
 >>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
+=======
+import InputBar from "./components/InputBar"; // Prendi la scatola!
+import NewsCard from "./components/NewsCard";
+>>>>>>> 7cf029d (Mary: Aggiunta inputbar)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -531,11 +536,15 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <main className="container mx-auto p-10">
-        <h2 className="text-3xl font-black mb-8 text-center">Ultime Notizie ✨</h2>
+      <main className="container mx-auto">
+        {/* La scatola dei messaggi va qui in alto! */}
+        <InputBar />
         
-        {/* Ecco la tua NewsCard! */}
-        <div className="flex justify-center">
+        <h2 className="text-3xl font-black mb-8 text-center text-gray-800">
+          Le tue figurine News ✨
+        </h2>
+        
+        <div className="flex justify-center pb-20">
           <NewsCard />
         </div>
       </main>
