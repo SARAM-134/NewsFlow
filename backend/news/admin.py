@@ -48,6 +48,10 @@ class NotiziaAdmin(admin.ModelAdmin):
     search_fields = ('titolo', 'contenuto')
     date_hierarchy = 'data_pubblicazione'
 <<<<<<< HEAD
+<<<<<<< HEAD
     filter_horizontal = ('tags',)
 =======
 >>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
+=======
+    filter_horizontal = ('tags',)
+>>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)

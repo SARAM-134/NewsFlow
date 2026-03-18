@@ -9,8 +9,12 @@ urlpatterns = [
     # Rotte pubbliche per le Notizie
     path('notizie/', NotiziaListView.as_view(), name='notizia-list'),
 <<<<<<< HEAD
+<<<<<<< HEAD
     path('notizie/<str:url_hash>/', NotiziaDetailView.as_view(), name='notizia-detail'),
 =======
     path('notizie/<int:pk>/', NotiziaDetailView.as_view(), name='notizia-detail'),
 >>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
+=======
+    path('notizie/<str:url_hash>/', NotiziaDetailView.as_view(), name='notizia-detail'),
+>>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)
 ]

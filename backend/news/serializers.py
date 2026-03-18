@@ -21,6 +21,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class NotiziaSerializer(serializers.ModelSerializer):
 <<<<<<< HEAD
+<<<<<<< HEAD
     categoria_dettaglio = CategoriaSerializer(source='categoria', read_only=True)
     fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
     tags_dettaglio = TagSerializer(source='tags', many=True, read_only=True) 
@@ -33,6 +34,11 @@ class NotiziaSerializer(serializers.ModelSerializer):
     fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
     tags_dettaglio = TagSerializer(source='tag_set', many=True, read_only=True) # Usiamo tag_set se è ManyToMany o legame inverso
 >>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
+=======
+    categoria_dettaglio = CategoriaSerializer(source='categoria', read_only=True)
+    fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
+    tags_dettaglio = TagSerializer(source='tags', many=True, read_only=True) 
+>>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)
 
     class Meta:
         model = Notizia
@@ -48,6 +54,10 @@ class NotiziaSerializer(serializers.ModelSerializer):
             'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
             'categoria', 'categoria_dettaglio', 
             'fonte', 'fonte_dettaglio',
+<<<<<<< HEAD
             'tags_dettaglio'
 >>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
+=======
+            'tags', 'tags_dettaglio'
+>>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)
         ]
