@@ -1,5 +1,8 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f9d6553 (Mary: Aggiunta la prima NewsCard per le notizie)
 import React, { useState } from 'react';
 
 function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime = "5" }) {
@@ -135,6 +138,7 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor }) {
       {/* Linea di progresso estetica (Flow) sul fondo al passaggio del mouse */}
       <div className={`absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-1000 ease-in-out ${activeBg}`} />
 =======
+<<<<<<< HEAD
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
           </svg>
         </button>
@@ -148,6 +152,35 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor }) {
         {riassunto}
       </p>
 >>>>>>> d4112a9 (modifiche)
+=======
+function NewsCard() {
+  return (
+    <div className="max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:scale-105 transition-transform duration-300">
+      {/* Immagine della notizia */}
+      <img 
+        className="w-full h-48 object-cover" 
+        src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=500" 
+        alt="News" 
+      />
+      
+      {/* Testo della figurina */}
+      <div className="p-5">
+        <span className="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded-full uppercase">
+          Tecnologia
+        </span>
+        <h3 className="mt-3 text-xl font-bold text-gray-900">
+          L'intelligenza artificiale impara a cucinare! 🤖🍕
+        </h3>
+        <p className="mt-2 text-gray-500 text-sm leading-relaxed">
+          Oggi i robot hanno preparato la loro prima pizza. Il risultato? Croccante e digitale!
+        </p>
+        
+        <button className="mt-4 w-full bg-gray-50 text-blue-600 font-semibold py-2 rounded-xl hover:bg-blue-50 transition">
+          Leggi di più
+        </button>
+      </div>
+>>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
+>>>>>>> f9d6553 (Mary: Aggiunta la prima NewsCard per le notizie)
     </div>
   );
 }

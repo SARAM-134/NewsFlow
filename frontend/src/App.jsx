@@ -19,7 +19,11 @@ import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
 =======
 import Navbar from "./components/Navbar";
+<<<<<<< HEAD
 >>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+import NewsCard from "./components/NewsCard"; // Prendi la figurina dalla scatola!
+>>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -421,6 +425,7 @@ function App() {
 
   return (
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div className="min-h-screen bg-white font-sans antialiased">
       <Navbar />
       <main className="max-w-7xl mx-auto px-6 pb-24">
@@ -519,7 +524,23 @@ function App() {
          <p>Benvenuta Mary!</p>
       </div>
 >>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
+<<<<<<< HEAD
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+=======
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      
+      <main className="container mx-auto p-10">
+        <h2 className="text-3xl font-black mb-8 text-center">Ultime Notizie ✨</h2>
+        
+        {/* Ecco la tua NewsCard! */}
+        <div className="flex justify-center">
+          <NewsCard />
+        </div>
+      </main>
+>>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
+>>>>>>> f9d6553 (Mary: Aggiunta la prima NewsCard per le notizie)
     </div>
   );
 }
