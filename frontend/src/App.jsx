@@ -1,13 +1,19 @@
 import Navbar from "./components/Navbar";
+import NewsCard from "./components/NewsCard"; // Prendi la figurina dalla scatola!
 
 function App() {
   return (
-    <div>
-      <Navbar /> {/* Questo richiama il tuo disegno blu! */}
-      <div className="p-10 text-center">
-         <h1 className="text-3xl font-bold">NewsFlow 🚀</h1>
-         <p>Benvenuta Mary!</p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      
+      <main className="container mx-auto p-10">
+        <h2 className="text-3xl font-black mb-8 text-center">Ultime Notizie ✨</h2>
+        
+        {/* Ecco la tua NewsCard! */}
+        <div className="flex justify-center">
+          <NewsCard />
+        </div>
+      </main>
     </div>
   );
 }
