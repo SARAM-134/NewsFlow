@@ -16,12 +16,15 @@
 >>>>>>> 93957fd (Prima pagina completata)
 @import "tailwindcss";
 
+<<<<<<< HEAD
 =======
 @import "tailwindcss";
 >>>>>>> fdbac5e (Prima pagina completata)
 =======
 @import "tailwindcss";
 >>>>>>> 9dd4e9f (Prima pagina completata)
+=======
+>>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -29,6 +32,7 @@
 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -49,10 +53,15 @@
 >>>>>>> fe9f415 (Prima pagina completata)
 =======
 >>>>>>> 93957fd (Prima pagina completata)
+=======
+=======
+>>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
     -ms-overflow-style: none;
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+<<<<<<< HEAD
 }
 <<<<<<< HEAD
 >>>>>>> 20ac6ca (Mary: Inizializzato frontend e creata Navbar)
@@ -84,4 +93,10 @@
     scrollbar-width: none;  /* Firefox */
 }
 >>>>>>> 9dd4e9f (Prima pagina completata)
+<<<<<<< HEAD
 >>>>>>> 93957fd (Prima pagina completata)
+=======
+=======
+}
+>>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
+>>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
