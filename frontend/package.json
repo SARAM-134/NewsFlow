@@ -122,7 +122,13 @@ npm run dev
 # Installa le dipendenze necessarie (le librerie che servono a React)
 npm install
 
+<<<<<<< HEAD
 # Fai partire il progetto per vedere se funziona
 npm run dev
 >>>>>>> 1004751 (Add setup instructions to package.json)
+<<<<<<< HEAD
 >>>>>>> aa12271 (Add setup instructions to package.json)
+=======
+=======
+>>>>>>> 3522f70 (Update package.json)
+>>>>>>> a24521d (Update package.json)
