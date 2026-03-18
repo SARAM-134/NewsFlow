@@ -15,5 +15,6 @@ urlpatterns = [
     # Le app registreranno i propri URL nei rispettivi urls.py
     path("api/auth/", include("accounts.urls")),
     path("api/interactions/", include("interactions.urls")),
+    path("api/reports/", include("reports.urls")),
     path("api/", include("news.urls")),
 ]
