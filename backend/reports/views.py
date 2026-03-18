@@ -1,7 +1,11 @@
 from rest_framework import generics, permissions
 from .models.report import Report
+<<<<<<< HEAD
 from .models.briefing import Briefing
 from .serializers import ReportSerializer, BriefingSerializer
+=======
+from .serializers import ReportSerializer
+>>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
 
 class ReportListCreateView(generics.ListCreateAPIView):
     """
@@ -27,6 +31,7 @@ class ReportDetailView(generics.RetrieveDestroyAPIView):
 
     def get_queryset(self):
         return Report.objects.filter(utente=self.request.user.profilo)
+<<<<<<< HEAD
 
 class BriefingListView(generics.ListAPIView):
     """
@@ -55,3 +60,5 @@ class MyBriefingsView(generics.ListAPIView):
                 last_briefing_ids.append(ultimo.id)
         
         return Briefing.objects.filter(id__in=last_briefing_ids)
+=======
+>>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
