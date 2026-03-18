@@ -478,6 +478,7 @@ function App() {
       </main>
 
     </div>
+<<<<<<< HEAD
 
   );
 
@@ -507,3 +508,9 @@ function App() {
 
 export default App
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
+=======
+  )
+}
+
+export default App
+>>>>>>> 6d50b4c (Mary: Inizializzato frontend e creata Navbar)
