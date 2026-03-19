@@ -206,6 +206,10 @@ __marimo__/
 # MacOS
 .DS_Store
 <<<<<<< HEAD
+<<<<<<< HEAD
 .env
 =======
 >>>>>>> 9bf9769 (chore: Add .DS_Store to .gitignore for MacOS)
+=======
+.env
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)

@@ -11,10 +11,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # 1. Configurazione Gemini
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
         if not hasattr(settings, 'AI_CONFIG'):
             self.stdout.write(self.style.ERROR("ERRORE: Dizionario AI_CONFIG non trovato in settings.py"))
             return
 
+<<<<<<< HEAD
         api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
         if not api_key:
             self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
@@ -23,11 +27,17 @@ class Command(BaseCommand):
         if not api_key:
             self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata in settings.py"))
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+        api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
+        if not api_key:
+            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
             return
 
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(settings.AI_CONFIG.get('MODEL_NAME', 'gemini-1.5-flash'))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         # 2. Recupero Tag Standard dal Database
         # Questo permette all'admin di aggiungere nuovi tag senza toccare il codice
@@ -43,6 +53,9 @@ class Command(BaseCommand):
 =======
         # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione per evitare timeout)
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+        # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
         notizie = Notizia.objects.filter(ai_processata=False)[:5]
         
         if not notizie.exists():
@@ -52,6 +65,7 @@ class Command(BaseCommand):
         for notizia in notizie:
             self.stdout.write(f"--- Elaborazione AI: {notizia.titolo} ---")
             
+<<<<<<< HEAD
 <<<<<<< HEAD
             # Prompt evoluto con tag dinamici dal DB
             prompt = f"""
@@ -70,13 +84,16 @@ class Command(BaseCommand):
             Contenuto: {notizia.contenuto_originale}
 =======
             # Prepariamo il prompt per Gemini
+=======
+            # Prepariamo il prompt per Gemini con le regole rigide del nostro Database
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
             prompt = f"""
             Analizza questa notizia e restituisci un JSON puro (senza markdown o backticks).
             Campi richiesti:
             - 'riassunto': un riassunto di massimo 3 righe che colga i punti chiave.
-            - 'sentiment': una sola parola tra (Positivo, Negativo, Neutro).
-            - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti tecnologici).
-
+            - 'sentiment': obbligatoriamente e solo una di queste 3 parole esatte (scritte in maiuscolo): POSITIVE, NEGATIVE, NEUTRAL.
+            - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti).
+            
             Titolo: {notizia.titolo}
 <<<<<<< HEAD
             Contenuto: {notizia.contenuto}
@@ -90,9 +107,13 @@ class Command(BaseCommand):
                 response = model.generate_content(prompt)
                 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 # Pulizia della risposta per estrarre solo il JSON (spesso Gemini mette ```json ... ```)
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+                # Pulizia della risposta per estrarre solo il JSON
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
                 raw_text = response.text.strip()
                 if "```json" in raw_text:
                     raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
@@ -102,6 +123,7 @@ class Command(BaseCommand):
                 data = json.loads(raw_text)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 # 3. Aggiornamento Notizia
                 notizia.extract_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
@@ -110,10 +132,16 @@ class Command(BaseCommand):
                 notizia.riassunto_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'Neutro')
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+                # 2. Aggiornamento Notizia coi NOMI CORRETTI
+                notizia.extract_ai = data.get('riassunto', '')
+                notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
                 notizia.provider_ai = "Google Gemini"
                 notizia.ai_processata = True
                 notizia.save()
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 # 4. Gestione Tag Filtrata (Lookup dinamico nel DB)
                 tag_nomi_raw = data.get('tags', [])
@@ -136,13 +164,18 @@ class Command(BaseCommand):
                         continue
 =======
                 # 3. Gestione Tag
+=======
+                # 3. Gestione Tag col bypass del vincolo NOT NULL sulla Categoria
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
                 tag_nomi = data.get('tags', [])
                 for nome in tag_nomi:
-                    # Crea il tag se non esiste, basandosi sullo slug
                     tag_slug = slugify(nome)
                     tag_obj, created = Tag.objects.get_or_create(
                         slug=tag_slug,
-                        defaults={'nome': nome}
+                        defaults={
+                            'nome': nome,
+                            'categoria': notizia.categoria  # Eredita la categoria dell'articolo
+                        }
                     )
                     notizia.tags.add(tag_obj)
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)

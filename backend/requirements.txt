@@ -10,6 +10,7 @@ feedparser
 trafilatura
 google-generativeai
 python-dotenv
+<<<<<<< HEAD
 django-apscheduler
 =======
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
@@ -17,3 +18,5 @@ django-apscheduler
 feedparser
 trafilatura
 >>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
+=======
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)

@@ -30,10 +30,14 @@ class Notizia(models.Model):
     url_originale = models.URLField(unique=True)
     url_hash = models.CharField(max_length=64, unique=True)
 <<<<<<< HEAD
+<<<<<<< HEAD
     immagine_url = models.URLField(max_length=1000, blank=True, null=True)
 =======
     immagine_url = models.URLField(blank=True, null=True) # URL estratto dal feed o dall'AI
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+    immagine_url = models.URLField(max_length=1000, blank=True, null=True)
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
     data_pubblicazione = models.DateTimeField()
     
     extract_ai = models.TextField(blank=True, null=True)
@@ -45,6 +49,7 @@ class Notizia(models.Model):
     )
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
     ai_processata = models.BooleanField(default=False)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     tags = models.ManyToManyField('news.Tag', related_name='notizie', blank=True)
@@ -87,6 +92,8 @@ class Notizia(models.Model):
     extract_ai = models.TextField(blank=True, null=True)
     sentiment_ai = models.CharField(max_length=50, blank=True, null=True)
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
+=======
+>>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
 
     class Meta:
         verbose_name = 'Notizia'
