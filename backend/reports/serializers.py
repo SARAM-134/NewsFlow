@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models.report import Report
+from .models.briefing import Briefing
 from news.models import Notizia
 
 class NotiziaMinimalReportSerializer(serializers.ModelSerializer):
@@ -24,3 +25,14 @@ class ReportSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # L'utente loggato viene assegnato in automatico nelle views
         return super().create(validated_data)
+
+class BriefingSerializer(serializers.ModelSerializer):
+    """
+    Serializer per visualizzare i Briefing/Newsletter generati.
+    """
+    categoria_nome = serializers.CharField(source='categoria.nome', read_only=True)
+
+    class Meta:
+        model = Briefing
+        fields = ['id', 'titolo', 'contenuto', 'categoria', 'categoria_nome', 'data_creazione']
+        read_only_fields = ['data_creazione']

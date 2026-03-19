@@ -6,6 +6,7 @@ from django.utils.encoding import force_str
 
 from .models.auth import Auth
 from .models.utente import Utente
+from news.serializers import CategoriaSerializer
 
 # --- JWT CUSTOM SERIALIZER ---
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -28,10 +29,11 @@ class UtenteSerializer(serializers.ModelSerializer):
     """
     email = serializers.EmailField(source='auth.email', read_only=True)
     is_active = serializers.BooleanField(source='auth.is_active', read_only=True)
+    categorie_preferite_dettaglio = CategoriaSerializer(source='categorie_preferite', many=True, read_only=True)
 
     class Meta:
         model = Utente
-        fields = ['id', 'email', 'role', 'nome', 'cognome', 'is_active']
+        fields = ['id', 'email', 'role', 'nome', 'cognome', 'is_active', 'categorie_preferite', 'categorie_preferite_dettaglio']
         read_only_fields = ['id', 'email', 'role', 'is_active'] # L'utente non può cambiarsi il ruolo o attivarsi da solo
 
 # --- SERIALIZER REGISTRAZIONE PUBBLICA ---

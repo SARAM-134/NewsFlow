@@ -7,10 +7,11 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 
-load_dotenv() # Carica le variabili dal file .env
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv() # Carica dal CWD (solitamente /backend)
+load_dotenv(BASE_DIR.parent / ".env") # Carica dalla root se presente
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
