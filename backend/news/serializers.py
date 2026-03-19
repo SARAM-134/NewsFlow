@@ -44,6 +44,9 @@ class NotiziaSerializer(serializers.ModelSerializer):
         model = Notizia
         fields = [
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
             'id', 'titolo', 'contenuto_originale', 'url_originale', 'url_hash', 'immagine_url',
             'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
             'categoria', 'categoria_dettaglio', 
