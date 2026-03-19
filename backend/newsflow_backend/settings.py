@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "news",
     "reports",
     "interactions",
+    "django_apscheduler",
 ]
 
 

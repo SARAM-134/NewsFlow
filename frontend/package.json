@@ -29,6 +29,4 @@
     "vite": "^8.0.0"
   }
 }
-# Installa le dipendenze necessarie (le librerie che servono a React)
-npm install
 
