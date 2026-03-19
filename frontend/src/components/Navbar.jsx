@@ -1,16 +1,14 @@
+import React from 'react';
+
 function Navbar() {
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
-      <div className="text-2xl font-bold text-blue-600">
-        NewsFlow 🚀
-      </div>
-      <div className="space-x-6 text-gray-600 font-medium">
-        <a href="#" className="hover:text-blue-500">Home</a>
-        <a href="#" className="hover:text-blue-500">Notizie</a>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-          Entra
-        </button>
-      </div>
+    <nav className="bg-white p-4 shadow-md flex items-center justify-between sticky top-0 z-50">
+  
+      <h1 className="text-2xl font-bold text-blue-600">NewsFlow</h1>
+      
+      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
+        Accedi
+      </button>
     </nav>
   );
 }
