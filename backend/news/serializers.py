@@ -27,7 +27,7 @@ class NotiziaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notizia
         fields = [
-            'id', 'titolo', 'contenuto', 'url_originale', 'url_hash', 
+            'id', 'titolo', 'contenuto_originale', 'url_originale', 'url_hash', 'immagine_url',
             'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
             'categoria', 'categoria_dettaglio', 
             'fonte', 'fonte_dettaglio',
