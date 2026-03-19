@@ -56,8 +56,6 @@ npm run dev
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
 =======
 }
-# Installa le dipendenze necessarie (le librerie che servono a React)
-npm install
 
 <<<<<<< HEAD
 # Fai partire il progetto per vedere se funziona

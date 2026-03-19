@@ -8,3 +8,4 @@ feedparser
 trafilatura
 google-generativeai
 python-dotenv
+django-apscheduler
