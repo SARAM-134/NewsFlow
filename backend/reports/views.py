@@ -1,11 +1,16 @@
 from rest_framework import generics, permissions
 from .models.report import Report
 <<<<<<< HEAD
+<<<<<<< HEAD
 from .models.briefing import Briefing
 from .serializers import ReportSerializer, BriefingSerializer
 =======
 from .serializers import ReportSerializer
 >>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
+=======
+from .models.briefing import Briefing
+from .serializers import ReportSerializer, BriefingSerializer
+>>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 
 class ReportListCreateView(generics.ListCreateAPIView):
     """
@@ -32,6 +37,9 @@ class ReportDetailView(generics.RetrieveDestroyAPIView):
     def get_queryset(self):
         return Report.objects.filter(utente=self.request.user.profilo)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 
 class BriefingListView(generics.ListAPIView):
     """
@@ -60,5 +68,8 @@ class MyBriefingsView(generics.ListAPIView):
                 last_briefing_ids.append(ultimo.id)
         
         return Briefing.objects.filter(id__in=last_briefing_ids)
+<<<<<<< HEAD
 =======
 >>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
+=======
+>>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)

@@ -9,9 +9,12 @@ from dotenv import load_dotenv
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 load_dotenv() # Carica le variabili dal file .env
 >>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
 
+=======
+>>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
