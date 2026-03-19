@@ -5,6 +5,9 @@ Django settings for newsflow_backend project.
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv() # Carica le variabili dal file .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -191,6 +194,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # ---------------------------------------------------------------------------
 AI_CONFIG = {
     "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
-    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-1.5-flash"),
+    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
     "MAX_LINES_SUMMARY": 3,
 }
