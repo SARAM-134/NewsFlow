@@ -119,8 +119,6 @@ npm run dev
 =======
 =======
 }
-# Installa le dipendenze necessarie (le librerie che servono a React)
-npm install
 
 <<<<<<< HEAD
 # Fai partire il progetto per vedere se funziona
