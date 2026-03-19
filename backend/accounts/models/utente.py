@@ -19,6 +19,11 @@ class Utente(models.Model):
     role = models.CharField(max_length=20, choices=RUOLI, default='giornalista')
     nome = models.CharField(max_length=100, blank=True)
     cognome = models.CharField(max_length=100, blank=True)
+    categorie_preferite = models.ManyToManyField(
+        'news.Categoria',
+        related_name='followers',
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Profilo Utente'

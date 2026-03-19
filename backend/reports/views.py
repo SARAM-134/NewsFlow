@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 from .models.report import Report
-from .serializers import ReportSerializer
+from .models.briefing import Briefing
+from .serializers import ReportSerializer, BriefingSerializer
 
 class ReportListCreateView(generics.ListCreateAPIView):
     """
@@ -26,3 +27,31 @@ class ReportDetailView(generics.RetrieveDestroyAPIView):
 
     def get_queryset(self):
         return Report.objects.filter(utente=self.request.user.profilo)
+
+class BriefingListView(generics.ListAPIView):
+    """
+    GET: Elenco di tutti i briefing generati (per admin o consultazione generale).
+    """
+    queryset = Briefing.objects.all()
+    serializer_class = BriefingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class MyBriefingsView(generics.ListAPIView):
+    """
+    GET: Restituisce l'ultimo briefing per ciascuna categoria seguita dall'utente loggato.
+    """
+    serializer_class = BriefingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user.profilo
+        user_categories = user.categorie_preferite.all()
+        
+        # Per ogni categoria seguita, recuperiamo l'ID dell'ultimo briefing generato
+        last_briefing_ids = []
+        for cat in user_categories:
+            ultimo = Briefing.objects.filter(categoria=cat).order_by('-data_creazione').first()
+            if ultimo:
+                last_briefing_ids.append(ultimo.id)
+        
+        return Briefing.objects.filter(id__in=last_briefing_ids)
