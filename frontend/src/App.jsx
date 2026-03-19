@@ -2,8 +2,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+>>>>>>> 562c129 (Mary: Sito in progress)
 import React, { useRef, useState } from 'react';
 
 =======
@@ -29,6 +32,38 @@ import NewsCard from "./components/NewsCard"; // Prendi la figurina dalla scatol
 import InputBar from "./components/InputBar"; // Prendi la scatola!
 import NewsCard from "./components/NewsCard";
 >>>>>>> 7cf029d (Mary: Aggiunta inputbar)
+=======
+import Navbar from './components/Navbar';
+import InputBar from './components/InputBar';
+import NewsCard from './components/NewsCard';
+
+const notizieDalDatabase = [
+  {
+    id: 1,
+    titolo: "L'intelligenza artificiale impara a cucinare!",
+    estratto_ai: "Un nuovo modello di AI ha imparato a preparare la pizza perfetta analizzando migliaia di ricette.",
+    categoria: "Tech",
+    sentiment: "positivo",
+    immagine: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500"
+  },
+  {
+    id: 2,
+    titolo: "Nuovi parchi verdi in città",
+    estratto_ai: "Il comune ha approvato il piano per 10 nuovi spazi verdi entro la fine dell'anno.",
+    categoria: "Ambiente",
+    sentiment: "positivo",
+    immagine: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500"
+  },
+  {
+    id: 3,
+    titolo: "Sconfitta amara per la squadra locale",
+    estratto_ai: "Una partita difficile che si conclude con un 2-0. La difesa ha faticato molto.",
+    categoria: "Sport",
+    sentiment: "negativo",
+    immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500" 
+  }
+]; 
+>>>>>>> cb18165 (Mary: Sito in progress)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -431,6 +466,7 @@ function App() {
   return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div className="min-h-screen bg-white font-sans antialiased">
       <Navbar />
       <main className="max-w-7xl mx-auto px-6 pb-24">
@@ -534,18 +570,23 @@ function App() {
 =======
 =======
     <div className="min-h-screen bg-gray-50">
+=======
+    <div className="min-h-screen bg-gray-100">
+>>>>>>> cb18165 (Mary: Sito in progress)
       <Navbar />
-      
-      <main className="container mx-auto">
-        {/* La scatola dei messaggi va qui in alto! */}
+      <main className="p-8">
         <InputBar />
-        
-        <h2 className="text-3xl font-black mb-8 text-center text-gray-800">
-          Le tue figurine News ✨
-        </h2>
-        
-        <div className="flex justify-center pb-20">
-          <NewsCard />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+          {notizieDalDatabase.map((notizia) => (
+            <NewsCard 
+              key={notizia.id} 
+              titolo={notizia.titolo} 
+              riassunto={notizia.estratto_ai}
+              categoria={notizia.categoria}
+              immagine={notizia.immagine}
+              sentiment={notizia.sentiment} 
+            />
+          ))}
         </div>
       </main>
 >>>>>>> 3e11775 (Mary: Aggiunta la prima NewsCard per le notizie)
