@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
@@ -31,9 +32,9 @@ const notizieDalDatabase = [
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <main className="p-8">
+      <main className="max-w-7xl mx-auto px-6 pb-20">
         <InputBar />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {notizieDalDatabase.map((notizia) => (
