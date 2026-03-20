@@ -39,6 +39,9 @@ class Command(BaseCommand):
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
         # 2. Recupero Tag Standard dal Database
         # Questo permette all'admin di aggiungere nuovi tag senza toccare il codice
         db_tags = list(Tag.objects.values_list('nome', flat=True))
@@ -67,6 +70,7 @@ class Command(BaseCommand):
             
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             # Prompt evoluto con tag dinamici dal DB
             prompt = f"""
             Analizza questa notizia e restituisci un JSON puro.
@@ -87,12 +91,20 @@ class Command(BaseCommand):
 =======
             # Prepariamo il prompt per Gemini con le regole rigide del nostro Database
 >>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
+=======
+            # Prompt evoluto con tag dinamici dal DB
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
             prompt = f"""
-            Analizza questa notizia e restituisci un JSON puro (senza markdown o backticks).
-            Campi richiesti:
-            - 'riassunto': un riassunto di massimo 3 righe che colga i punti chiave.
-            - 'sentiment': obbligatoriamente e solo una di queste 3 parole esatte (scritte in maiuscolo): POSITIVE, NEGATIVE, NEUTRAL.
-            - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti).
+            Analizza questa notizia e restituisci un JSON puro.
+            Regole rigorose per i 'tags':
+            - Scegli al massimo 5 tag esclusivamente dalla seguente lista approvata: 
+              [{tags_str}]
+            - È severamente VIETATO usare nomi propri di persone, aziende, città o luoghi specifici come tag.
+            
+            Campi JSON richiesti:
+            - 'riassunto': massimo 3 righe.
+            - 'sentiment': una tra POSITIVE, NEGATIVE, NEUTRAL.
+            - 'tags': lista di stringhe (solo dalla lista sopra).
             
             Titolo: {notizia.titolo}
 <<<<<<< HEAD
@@ -108,12 +120,15 @@ class Command(BaseCommand):
                 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 # Pulizia della risposta per estrarre solo il JSON (spesso Gemini mette ```json ... ```)
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
 =======
                 # Pulizia della risposta per estrarre solo il JSON
 >>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
+=======
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 raw_text = response.text.strip()
                 if "```json" in raw_text:
                     raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
@@ -122,6 +137,7 @@ class Command(BaseCommand):
 
                 data = json.loads(raw_text)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                 # 3. Aggiornamento Notizia
@@ -134,6 +150,9 @@ class Command(BaseCommand):
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
 =======
                 # 2. Aggiornamento Notizia coi NOMI CORRETTI
+=======
+                # 3. Aggiornamento Notizia
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 notizia.extract_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
 >>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
@@ -143,6 +162,9 @@ class Command(BaseCommand):
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 # 4. Gestione Tag Filtrata (Lookup dinamico nel DB)
                 tag_nomi_raw = data.get('tags', [])
                 
@@ -162,6 +184,7 @@ class Command(BaseCommand):
                         notizia.tags.add(tag_obj)
                     except Tag.DoesNotExist:
                         continue
+<<<<<<< HEAD
 =======
                 # 3. Gestione Tag
 =======
@@ -179,6 +202,8 @@ class Command(BaseCommand):
                     )
                     notizia.tags.add(tag_obj)
 >>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
+=======
+>>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
 
                 self.stdout.write(self.style.SUCCESS(f"OK: Elaborazione completata per '{notizia.titolo}'"))
 
