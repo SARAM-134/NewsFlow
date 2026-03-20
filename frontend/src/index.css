@@ -1,12 +1,18 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> dbf9fb2 (Prima pagina completata)
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+>>>>>>> fe9f415 (Prima pagina completata)
 @import "tailwindcss";
 
+=======
+@import "tailwindcss";
+>>>>>>> fdbac5e (Prima pagina completata)
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -14,6 +20,7 @@
 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
+<<<<<<< HEAD
 <<<<<<< HEAD
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -28,6 +35,8 @@
 }
 >>>>>>> dbf9fb2 (Prima pagina completata)
 =======
+=======
+>>>>>>> fe9f415 (Prima pagina completata)
     -ms-overflow-style: none;
     /* IE and Edge */
     scrollbar-width: none;
@@ -39,4 +48,12 @@
 =======
 @import "tailwindcss";
 >>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
+<<<<<<< HEAD
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
+=======
+=======
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+>>>>>>> fdbac5e (Prima pagina completata)
+>>>>>>> fe9f415 (Prima pagina completata)
