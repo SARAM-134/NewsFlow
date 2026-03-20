@@ -22,6 +22,16 @@ class Command(BaseCommand):
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(settings.AI_CONFIG.get('MODEL_NAME', 'gemini-1.5-flash'))
 
+        # 2. Recupero Tag Standard dal Database
+        # Questo permette all'admin di aggiungere nuovi tag senza toccare il codice
+        db_tags = list(Tag.objects.values_list('nome', flat=True))
+        if not db_tags:
+            self.stdout.write(self.style.WARNING("ATTENZIONE: Nessun tag trovato nel database. L'IA non potrà taggare nulla."))
+            # Forniamo una lista minima di fallback se il db è vuoto? 
+            # Preferibile lasciare vuoto per forzare l'admin a popolarlo.
+        
+        tags_str = ", ".join(db_tags)
+
         # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
         notizie = Notizia.objects.filter(ai_processata=False)[:5]
         
@@ -32,13 +42,18 @@ class Command(BaseCommand):
         for notizia in notizie:
             self.stdout.write(f"--- Elaborazione AI: {notizia.titolo} ---")
             
-            # Prepariamo il prompt per Gemini con le regole rigide del nostro Database
+            # Prompt evoluto con tag dinamici dal DB
             prompt = f"""
-            Analizza questa notizia e restituisci un JSON puro (senza markdown o backticks).
-            Campi richiesti:
-            - 'riassunto': un riassunto di massimo 3 righe che colga i punti chiave.
-            - 'sentiment': obbligatoriamente e solo una di queste 3 parole esatte (scritte in maiuscolo): POSITIVE, NEGATIVE, NEUTRAL.
-            - 'tags': una lista di massimo 5 parole chiave (nomi propri di aziende, persone o ambiti).
+            Analizza questa notizia e restituisci un JSON puro.
+            Regole rigorose per i 'tags':
+            - Scegli al massimo 5 tag esclusivamente dalla seguente lista approvata: 
+              [{tags_str}]
+            - È severamente VIETATO usare nomi propri di persone, aziende, città o luoghi specifici come tag.
+            
+            Campi JSON richiesti:
+            - 'riassunto': massimo 3 righe.
+            - 'sentiment': una tra POSITIVE, NEGATIVE, NEUTRAL.
+            - 'tags': lista di stringhe (solo dalla lista sopra).
             
             Titolo: {notizia.titolo}
             Contenuto: {notizia.contenuto_originale}
@@ -47,7 +62,6 @@ class Command(BaseCommand):
             try:
                 response = model.generate_content(prompt)
                 
-                # Pulizia della risposta per estrarre solo il JSON
                 raw_text = response.text.strip()
                 if "```json" in raw_text:
                     raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
@@ -56,25 +70,32 @@ class Command(BaseCommand):
 
                 data = json.loads(raw_text)
 
-                # 2. Aggiornamento Notizia coi NOMI CORRETTI
+                # 3. Aggiornamento Notizia
                 notizia.extract_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
                 notizia.provider_ai = "Google Gemini"
                 notizia.ai_processata = True
                 notizia.save()
 
-                # 3. Gestione Tag col bypass del vincolo NOT NULL sulla Categoria
-                tag_nomi = data.get('tags', [])
-                for nome in tag_nomi:
-                    tag_slug = slugify(nome)
-                    tag_obj, created = Tag.objects.get_or_create(
-                        slug=tag_slug,
-                        defaults={
-                            'nome': nome,
-                            'categoria': notizia.categoria  # Eredita la categoria dell'articolo
-                        }
-                    )
-                    notizia.tags.add(tag_obj)
+                # 4. Gestione Tag Filtrata (Lookup dinamico nel DB)
+                tag_nomi_raw = data.get('tags', [])
+                
+                # Mappa case-insensitive per far corrispondere i tag di Gemini al DB
+                # Usiamo i nomi esatti salvati nel DB
+                standard_map = {t.lower(): t for t in db_tags}
+                tag_nomi_validi = []
+                for t in tag_nomi_raw:
+                    t_lower = t.lower().strip()
+                    if t_lower in standard_map:
+                        tag_nomi_validi.append(standard_map[t_lower])
+                
+                for nome in tag_nomi_validi:
+                    # Usiamo get perché sappiamo che il tag esiste nel DB (grazie al filtro sopra)
+                    try:
+                        tag_obj = Tag.objects.get(nome=nome)
+                        notizia.tags.add(tag_obj)
+                    except Tag.DoesNotExist:
+                        continue
 
                 self.stdout.write(self.style.SUCCESS(f"OK: Elaborazione completata per '{notizia.titolo}'"))
 
