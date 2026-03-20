@@ -1,51 +1,91 @@
+import React, { useRef } from 'react';
 import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
 
-const notizieDalDatabase = [
-  {
-    id: 1,
-    titolo: "L'intelligenza artificiale impara a cucinare!",
-    estratto_ai: "Un nuovo modello di AI ha imparato a preparare la pizza perfetta analizzando migliaia di ricette.",
-    categoria: "Tech",
-    sentiment: "positivo",
-    immagine: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500"
-  },
-  {
-    id: 2,
-    titolo: "Nuovi parchi verdi in città",
-    estratto_ai: "Il comune ha approvato il piano per 10 nuovi spazi verdi entro la fine dell'anno.",
-    categoria: "Ambiente",
-    sentiment: "positivo",
-    immagine: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500"
-  },
-  {
-    id: 3,
-    titolo: "Sconfitta amara per la squadra locale",
-    estratto_ai: "Una partita difficile che si conclude con un 2-0. La difesa ha faticato molto.",
-    categoria: "Sport",
-    sentiment: "negativo",
-    immagine: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=500" 
-  }
-]; 
-
 function App() {
+  const scrollRef = useRef(null);
+
+  const notizie = [
+    { 
+      id: 1, 
+      categoria: "DAL MONDO", 
+      titolo: "Luci e colori dal Festival d'Oriente", 
+      riassunto: "Un'esplosione di tradizioni che unisce i popoli in un abbraccio universale.", 
+      immagine: "https://images.pexels.com/photos/36560064/pexels-photo-36560064.jpeg", 
+      sentiment: "positivo" 
+    },
+    { 
+      id: 2, 
+      categoria: "DESIGN", 
+      titolo: "L'estetica del silenzio moderno", 
+      riassunto: "Come il minimalismo trasforma le nostre case in oasi di luce e pace.", 
+      immagine: "https://images.pexels.com/photos/6445/sign-pencil-black-pencils.jpg", 
+      sentiment: "positivo" 
+    },
+    { 
+      id: 3, 
+      categoria: "CUCINA", 
+      titolo: "I segreti del Sushi millenario", 
+      riassunto: "L'arte dei maestri giapponesi arriva finalmente nelle nostre cucine.", 
+      immagine: "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg", 
+      sentiment: "positivo" 
+    },
+    { 
+      id: 4, 
+      categoria: "NATURA", 
+      titolo: "Il ritorno delle balene azzurre", 
+      riassunto: "Uno spettacolo incredibile avvistato al largo delle coste australiane.", 
+      immagine: "https://images.pexels.com/photos/4781938/pexels-photo-4781938.jpeg", 
+      sentiment: "positivo" 
+    } ,
+    { 
+      id: 5, 
+      categoria: "ECONOMIA", 
+      titolo: "Crisi dei mercati: crollo improvviso", 
+      riassunto: "Le borse europee chiudono in forte calo dopo le ultime decisioni sui tassi.", 
+      immagine: "https://images.pexels.com/photos/5833762/pexels-photo-5833762.jpeg", 
+      sentiment: "negativo" 
+    },
+    { 
+      id: 6, 
+      categoria: "AMBIENTE", 
+      titolo: "Emergenza siccità nei grandi fiumi", 
+      riassunto: "I livelli dell'acqua sono ai minimi storici, agricoltura a rischio in tutta Italia.", 
+      immagine: "https://images.pexels.com/photos/7639331/pexels-photo-7639331.jpeg", 
+      sentiment: "negativo" 
+    },
+    { 
+  id: 7, 
+  categoria: "TECNOLOGIA", 
+  titolo: "Nuovo aggiornamento per i sistemi satellitari", 
+  riassunto: "Rilasciata la versione 4.0 del protocollo di comunicazione globale per il monitoraggio meteo.", 
+  immagine: "https://images.pexels.com/photos/3892612/pexels-photo-3892612.jpeg", 
+  sentiment: "neutro" 
+}
+    
+  ];
+
+  const scroll = (direction) => {
+    if (direction === 'left') scrollRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+    else scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <main className="p-8">
+      <main className="max-w-7xl mx-auto px-6 pb-20">
         <InputBar />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {notizieDalDatabase.map((notizia) => (
-            <NewsCard 
-              key={notizia.id} 
-              titolo={notizia.titolo} 
-              riassunto={notizia.estratto_ai}
-              categoria={notizia.categoria}
-              immagine={notizia.immagine}
-              sentiment={notizia.sentiment} 
-            />
-          ))}
+        <div className="relative mt-12 group">
+          <button onClick={() => scroll('left')} className="absolute left-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-lg p-3 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">
+            ←
+          </button>
+          <div ref={scrollRef} className="flex gap-8 overflow-x-auto scrollbar-hide pb-10 px-2 scroll-smooth">
+            {notizie.map((n) => <NewsCard key={n.id} {...n} />)}
+          </div>
+          <button onClick={() => scroll('right')} className="absolute right-[-20px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-lg p-3 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">
+            →
+          </button>
         </div>
       </main>
     </div>
