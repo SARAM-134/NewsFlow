@@ -1,6 +1,10 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useRef, useState } from 'react';
 
+=======
+import React, { useRef } from 'react';
+>>>>>>> dbf9fb2 (Prima pagina completata)
 import Navbar from './components/Navbar';
 
 import InputBar from './components/InputBar';
@@ -187,6 +191,7 @@ function App() {
 
 
   return (
+<<<<<<< HEAD
 
     <div className="min-h-screen bg-white font-sans antialiased">
 
@@ -194,6 +199,11 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-6 pb-24">
 
+=======
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <main className="max-w-7xl mx-auto px-6 pb-20">
+>>>>>>> dbf9fb2 (Prima pagina completata)
         <InputBar />
 <<<<<<< HEAD
 
