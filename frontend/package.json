@@ -17,11 +17,16 @@
   "dependencies": {
     "react": "^19.2.4",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"
 =======
     "react-dom": "^19.2.4"
 >>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
+=======
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.1"
+>>>>>>> d4112a9 (modifiche)
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
