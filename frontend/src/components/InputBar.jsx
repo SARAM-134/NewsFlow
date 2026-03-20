@@ -8,6 +8,7 @@ const InputBar = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div className="flex flex-col items-center justify-center py-20 w-full max-w-4xl mx-auto">
       {/* Titolo */}
       <h1 className="text-6xl font-light mb-12 text-center tracking-tight">
@@ -18,16 +19,22 @@ const InputBar = () => {
       <h1 className="text-5xl font-light text-black mb-6 tracking-tight">
         Scopri le <span className="font-bold italic serif">Notizie Globali</span>
 >>>>>>> 93957fd (Prima pagina completata)
+=======
+    <div className="flex flex-col items-center justify-center py-20 w-full max-w-4xl mx-auto">
+      {/* Titolo più grande */}
+      <h1 className="text-6xl font-light mb-12 text-center tracking-tight">
+        Scopri le <span className="font-bold italic">Notizie Globali</span>
+>>>>>>> a36d81f (modifiche)
       </h1>
 
-
-      {/* Barra di ricerca con allineata */}
-      <div className="relative max-w-2xl mx-auto flex items-center justify-center">
+      {/* Barra di Input con Stella */}
+      <div className="relative w-full px-4">
         <input 
           type="text" 
-          placeholder="Incolla qui il link della notizia..."
-          className="w-full bg-white border border-gray-100 py-5 px-8 rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.02)] focus:outline-none focus:border-gray-200 transition-all text-sm font-light text-gray-400 placeholder:text-gray-200"
+          placeholder="Incolla qui il link della notizia..." 
+          className="w-full py-6 px-8 rounded-full border border-gray-100 shadow-xl focus:outline-none text-lg"
         />
+<<<<<<< HEAD
 <<<<<<< HEAD
         
         {/* Bottone con Sparkle Elegante */}
@@ -72,15 +79,20 @@ const InputBar = () => {
 <<<<<<< HEAD
 >>>>>>> dbf9fb2 (Prima pagina completata)
 =======
+=======
+>>>>>>> a36d81f (modifiche)
         
         {/* Bottone con Stella e scritta Codice */}
         <button className="absolute right-6 top-1/2 -translate-y-1/2 bg-black text-white rounded-full h-[70%] px-6 flex flex-col items-center justify-center hover:scale-105 transition-transform">
           <span className="text-xl">★</span>
           <span className="text-[10px] font-bold uppercase tracking-tighter">Codice</span>
         </button>
+<<<<<<< HEAD
 >>>>>>> d4112a9 (modifiche)
 =======
 >>>>>>> 93957fd (Prima pagina completata)
+=======
+>>>>>>> a36d81f (modifiche)
       </div>
 
       {/* Bottone ENTRA (Sostituisce Entra nel flusso) */}
