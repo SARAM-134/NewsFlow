@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
 =======
@@ -19,6 +20,8 @@
 >>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 =======
 >>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
+=======
+>>>>>>> 93957fd (Prima pagina completata)
 import React, { useRef, useState } from 'react';
 
 =======
@@ -53,6 +56,9 @@ import React, { useRef, useState } from 'react';
 >>>>>>> b20b985 (modifiche)
 =======
 >>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
+=======
+import React, { useRef } from 'react';
+>>>>>>> 9dd4e9f (Prima pagina completata)
 import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
@@ -770,9 +776,9 @@ function App() {
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <Navbar />
-      <main className="p-8">
+      <main className="max-w-7xl mx-auto px-6 pb-20">
         <InputBar />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {notizieDalDatabase.map((notizia) => (
