@@ -33,15 +33,8 @@ class NotiziaListView(generics.ListAPIView):
     ordering = ['-data_pubblicazione']
 
     def get_queryset(self):
-<<<<<<< HEAD
-<<<<<<< HEAD
         queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
-=======
-        queryset = Notizia.objects.select_related('categoria', 'fonte').all()
->>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
-=======
         queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
->>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)
         
         # Filtri custom via Query Params
         categoria_id = self.request.query_params.get('categoria')
@@ -54,24 +47,11 @@ class NotiziaListView(generics.ListAPIView):
         return queryset
 
 class NotiziaDetailView(generics.RetrieveAPIView):
-<<<<<<< HEAD
-<<<<<<< HEAD
     queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
     serializer_class = NotiziaSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'url_hash' 
-=======
-    """Visualizza il dettaglio di una singola notizia."""
-    queryset = Notizia.objects.select_related('categoria', 'fonte').all()
-    serializer_class = NotiziaSerializer
-    permission_classes = [permissions.AllowAny]
-
-# Nota: per la creazione via Web Scraper non esponiamo form pubblici.
-# Lo scraper userà comandi interni o API key specifiche (implementabili in futuro).
->>>>>>> 8c25fe3 (feat: Implement initial News API endpoints, serializers, and URL routing, introduce `NewsSalvata` and `Report` models, and update admin and account migrations.)
-=======
     queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
     serializer_class = NotiziaSerializer
     permission_classes = [permissions.AllowAny]
     lookup_field = 'url_hash' 
->>>>>>> dd08fa0 (feat: Implement news tagging functionality, update news sentiment field with choices, and switch news detail lookup to URL hash.)

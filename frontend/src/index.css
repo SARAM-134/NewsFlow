@@ -1,33 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dbf9fb2 (Prima pagina completata)
-=======
->>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
-=======
->>>>>>> fe9f415 (Prima pagina completata)
-=======
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> 93957fd (Prima pagina completata)
 @import "tailwindcss";
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-=======
-@import "tailwindcss";
->>>>>>> fdbac5e (Prima pagina completata)
-=======
-@import "tailwindcss";
->>>>>>> 9dd4e9f (Prima pagina completata)
-=======
->>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> da0014d (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -35,82 +7,6 @@
 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-<<<<<<< HEAD
-}
-=======
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
->>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
-=======
-}
->>>>>>> dbf9fb2 (Prima pagina completata)
-=======
-=======
->>>>>>> fe9f415 (Prima pagina completata)
-=======
->>>>>>> 93957fd (Prima pagina completata)
-=======
-=======
->>>>>>> 4dbc369 (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
-=======
->>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
->>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
-<<<<<<< HEAD
 }
-<<<<<<< HEAD
->>>>>>> 20ac6ca (Mary: Inizializzato frontend e creata Navbar)
-=======
-=======
-@import "tailwindcss";
->>>>>>> 4e5926e (Mary: Navbar colorata e funzionante con Tailwind)
-<<<<<<< HEAD
->>>>>>> b1813d6 (Mary: Navbar colorata e funzionante con Tailwind)
-=======
-=======
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
->>>>>>> fdbac5e (Prima pagina completata)
-<<<<<<< HEAD
->>>>>>> fe9f415 (Prima pagina completata)
-=======
-=======
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
->>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
-<<<<<<< HEAD
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
-=======
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
->>>>>>> 9dd4e9f (Prima pagina completata)
-<<<<<<< HEAD
->>>>>>> 93957fd (Prima pagina completata)
-=======
-=======
-}
->>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
-<<<<<<< HEAD
->>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
-=======
-=======
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
->>>>>>> da0014d (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
->>>>>>> 4dbc369 (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)

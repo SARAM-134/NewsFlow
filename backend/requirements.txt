@@ -4,23 +4,11 @@ djangorestframework-simplejwt>=5.3
 django-cors-headers>=4.3
 feedparser>=6.0
 google-generativeai>=0.4.0
-<<<<<<< HEAD
-<<<<<<< HEAD
 feedparser
 trafilatura
 google-generativeai
 python-dotenv
-<<<<<<< HEAD
-<<<<<<< HEAD
 django-apscheduler
-=======
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
 feedparser
 trafilatura
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
-=======
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
-=======
 django-apscheduler
->>>>>>> 0a7362a (feat: Implement automated news fetching, AI processing, and briefing generation using APScheduler and add an admin action to trigger briefing generation.)

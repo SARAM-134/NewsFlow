@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import hashlib
 import feedparser
 import trafilatura
@@ -19,10 +17,6 @@ class Command(BaseCommand):
             return entry.media_content[0].get('url')
         
         # 2. Cerca in enclosures (Standard podcast/allegati)
-=======
-import feedparser
-=======
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
 import hashlib
 import feedparser
 import trafilatura
@@ -41,26 +35,15 @@ class Command(BaseCommand):
         if 'media_content' in entry and len(entry.media_content) > 0:
             return entry.media_content[0].get('url')
         
-<<<<<<< HEAD
         # 2. Cerca in enclosures
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
         # 2. Cerca in enclosures (Standard podcast/allegati)
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
         if 'enclosures' in entry and len(entry.enclosures) > 0:
             for enc in entry.enclosures:
                 if enc.get('type', '').startswith('image/'):
                     return enc.get('url')
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         # 3. Fallback: Cerca un tag <img> nel summary o description tramite Regex
-=======
-        # 3. Fallback: Cerca un tag <img> nel summary o description
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
         # 3. Fallback: Cerca un tag <img> nel summary o description tramite Regex
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
         content = entry.get('summary', entry.get('description', ''))
         match = re.search(r'<img [^>]*src="([^"]+)"', content)
         if match:
@@ -68,10 +51,6 @@ class Command(BaseCommand):
         
         return None
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
     def handle(self, *args, **kwargs):
         # Prendiamo solo le fonti attive e di tipo RSS dal DB
         fonti_attive = Fonte.objects.filter(attiva=True, tipo='rss')
@@ -79,7 +58,6 @@ class Command(BaseCommand):
         if not fonti_attive.exists():
             self.stdout.write(self.style.WARNING("Nessuna fonte RSS attiva trovata nel database."))
             return
-<<<<<<< HEAD
 
         for fonte in fonti_attive:
             self.stdout.write(f"\nAnalizzando la fonte: {fonte.nome} ({fonte.url_feed})")
@@ -158,12 +136,6 @@ class Command(BaseCommand):
                     fonte.attiva = False
                     self.stdout.write(self.style.ERROR(f"Fonte {fonte.nome} disattivata per troppi errori."))
                 fonte.save()
-=======
-    def handle(self, *args, **options):
-        fonti = Fonte.objects.filter(attiva=True)
-        self.stdout.write(self.style.SUCCESS(f"Inizio parsing di {fonti.count()} fonti."))
-=======
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)
 
         for fonte in fonti_attive:
             self.stdout.write(f"\nAnalizzando la fonte: {fonte.nome} ({fonte.url_feed})")
@@ -233,10 +205,7 @@ class Command(BaseCommand):
                 fonte.num_errori_consecutivi = 0
                 fonte.save()
 
-<<<<<<< HEAD
         self.stdout.write(self.style.SUCCESS("Parsing completato!"))
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"Errore critico sulla fonte {fonte.nome}: {e}"))
                 fonte.num_errori_consecutivi += 1
@@ -246,4 +215,3 @@ class Command(BaseCommand):
                     fonte.attiva = False
                     self.stdout.write(self.style.ERROR(f"Fonte {fonte.nome} disattivata per troppi errori."))
                 fonte.save()
->>>>>>> 91fe992 (feat: Add initial data seeding for sources and users, and enhance news fetching to extract full article content.)

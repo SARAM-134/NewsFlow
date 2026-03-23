@@ -10,38 +10,21 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # 1. Configurazione Gemini
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
         if not hasattr(settings, 'AI_CONFIG'):
             self.stdout.write(self.style.ERROR("ERRORE: Dizionario AI_CONFIG non trovato in settings.py"))
             return
 
-<<<<<<< HEAD
         api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
         if not api_key:
             self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
-=======
-        api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
-        if not api_key:
-            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata in settings.py"))
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
         api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
         if not api_key:
             self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
             return
 
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel(settings.AI_CONFIG.get('MODEL_NAME', 'gemini-1.5-flash'))
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
         # 2. Recupero Tag Standard dal Database
         # Questo permette all'admin di aggiungere nuovi tag senza toccare il codice
         db_tags = list(Tag.objects.values_list('nome', flat=True))
@@ -53,12 +36,8 @@ class Command(BaseCommand):
         tags_str = ", ".join(db_tags)
 
         # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
-=======
         # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione per evitare timeout)
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
         # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
         notizie = Notizia.objects.filter(ai_processata=False)[:5]
         
         if not notizie.exists():
@@ -68,9 +47,6 @@ class Command(BaseCommand):
         for notizia in notizie:
             self.stdout.write(f"--- Elaborazione AI: {notizia.titolo} ---")
             
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
             # Prompt evoluto con tag dinamici dal DB
             prompt = f"""
             Analizza questa notizia e restituisci un JSON puro.
@@ -86,14 +62,7 @@ class Command(BaseCommand):
             
             Titolo: {notizia.titolo}
             Contenuto: {notizia.contenuto_originale}
-=======
-            # Prepariamo il prompt per Gemini
-=======
-            # Prepariamo il prompt per Gemini con le regole rigide del nostro Database
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
-=======
             # Prompt evoluto con tag dinamici dal DB
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
             prompt = f"""
             Analizza questa notizia e restituisci un JSON puro.
             Regole rigorose per i 'tags':
@@ -107,28 +76,14 @@ class Command(BaseCommand):
             - 'tags': lista di stringhe (solo dalla lista sopra).
             
             Titolo: {notizia.titolo}
-<<<<<<< HEAD
             Contenuto: {notizia.contenuto}
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
             Contenuto: {notizia.contenuto_originale}
->>>>>>> 280115d (feat: Add `Notizia` model, `fetch_news` command for RSS parsing, and `process_ai` command for AI-driven news enrichment.)
             """
 
             try:
                 response = model.generate_content(prompt)
                 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                # Pulizia della risposta per estrarre solo il JSON (spesso Gemini mette ```json ... ```)
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
                 # Pulizia della risposta per estrarre solo il JSON
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
-=======
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 raw_text = response.text.strip()
                 if "```json" in raw_text:
                     raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
@@ -137,34 +92,17 @@ class Command(BaseCommand):
 
                 data = json.loads(raw_text)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
                 # 3. Aggiornamento Notizia
                 notizia.extract_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
-=======
-                # 2. Aggiornamento Notizia
-                notizia.riassunto_ai = data.get('riassunto', '')
-                notizia.sentiment_ai = data.get('sentiment', 'Neutro')
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
                 # 2. Aggiornamento Notizia coi NOMI CORRETTI
-=======
                 # 3. Aggiornamento Notizia
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 notizia.extract_ai = data.get('riassunto', '')
                 notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
                 notizia.provider_ai = "Google Gemini"
                 notizia.ai_processata = True
                 notizia.save()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
                 # 4. Gestione Tag Filtrata (Lookup dinamico nel DB)
                 tag_nomi_raw = data.get('tags', [])
                 
@@ -184,12 +122,6 @@ class Command(BaseCommand):
                         notizia.tags.add(tag_obj)
                     except Tag.DoesNotExist:
                         continue
-<<<<<<< HEAD
-=======
-                # 3. Gestione Tag
-=======
-                # 3. Gestione Tag col bypass del vincolo NOT NULL sulla Categoria
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
                 tag_nomi = data.get('tags', [])
                 for nome in tag_nomi:
                     tag_slug = slugify(nome)
@@ -201,9 +133,6 @@ class Command(BaseCommand):
                         }
                     )
                     notizia.tags.add(tag_obj)
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
->>>>>>> ada3887 (feat: Add scripts for tag management and a command for AI news processing.)
 
                 self.stdout.write(self.style.SUCCESS(f"OK: Elaborazione completata per '{notizia.titolo}'"))
 

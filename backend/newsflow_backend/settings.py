@@ -6,15 +6,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
-<<<<<<< HEAD
-=======
-
-<<<<<<< HEAD
 load_dotenv() # Carica le variabili dal file .env
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
 
-=======
->>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -204,14 +197,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # ---------------------------------------------------------------------------
 AI_CONFIG = {
     "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
-<<<<<<< HEAD
-<<<<<<< HEAD
     "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
-=======
-    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-1.5-flash"),
->>>>>>> f4da9af (feat: Introduce core news model, project settings, and management commands for RSS fetching and AI processing.)
-=======
     "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
->>>>>>> 046e9eb (feat: Refine AI processing with updated Gemini prompt and configuration checks, integrate `.env` for settings, and adjust `Notizia` model fields.)
     "MAX_LINES_SUMMARY": 3,
 }

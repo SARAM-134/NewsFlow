@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> 018fe9f (Add setup instructions to package.json)
-=======
->>>>>>> 2c23162 (Update package.json)
-=======
-=======
->>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
 {
   "name": "frontend",
   "private": true,
@@ -27,34 +11,8 @@
   },
   "dependencies": {
     "react": "^19.2.4",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> a36d81f (modifiche)
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1"
-=======
-    "react-dom": "^19.2.4"
-<<<<<<< HEAD
->>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
-=======
-    "react-dom": "^19.2.4",
-    "react-router-dom": "^7.13.1"
->>>>>>> d4112a9 (modifiche)
-=======
->>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
-<<<<<<< HEAD
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
-=======
-    "react-dom": "^19.2.4",
-    "react-router-dom": "^7.13.1"
->>>>>>> 4853613 (modifiche)
->>>>>>> a36d81f (modifiche)
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -71,81 +29,4 @@
     "tailwindcss": "^4.2.1",
     "vite": "^8.0.0"
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 018fe9f (Add setup instructions to package.json)
-=======
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> aa12271 (Add setup instructions to package.json)
-=======
->>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
 }
-=======
-# Installa le dipendenze necessarie (le librerie che servono a React)
-npm install
-
-# Fai partire il progetto per vedere se funziona
-npm run dev
-<<<<<<< HEAD
->>>>>>> cea0664 (Add setup instructions to package.json)
-=======
-
->>>>>>> a3ca646 (Update package.json)
-=======
-}
->>>>>>> e6ea500 (Mary: Inizializzato frontend e creata Navbar)
-=======
-}
-
-<<<<<<< HEAD
-# Fai partire il progetto per vedere se funziona
-npm run dev
->>>>>>> bfb0e30 (Add setup instructions to package.json)
-=======
->>>>>>> 6533ddd (Update package.json)
-=======
-}
->>>>>>> c3a54d8 (Mary: Inizializzato frontend e creata Navbar)
-=======
->>>>>>> db91658 (Add setup instructions to package.json)
-<<<<<<< HEAD
->>>>>>> 018fe9f (Add setup instructions to package.json)
-=======
-=======
-
->>>>>>> 3506a13 (Update package.json)
-<<<<<<< HEAD
->>>>>>> 2c23162 (Update package.json)
-=======
-=======
-}
->>>>>>> e979906 (Mary: Inizializzato frontend e creata Navbar)
-<<<<<<< HEAD
->>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
-=======
-=======
-}
-
-<<<<<<< HEAD
-# Fai partire il progetto per vedere se funziona
-npm run dev
->>>>>>> 1004751 (Add setup instructions to package.json)
-<<<<<<< HEAD
->>>>>>> aa12271 (Add setup instructions to package.json)
-=======
-=======
->>>>>>> 3522f70 (Update package.json)
-<<<<<<< HEAD
->>>>>>> a24521d (Update package.json)
-=======
-=======
-}
->>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)

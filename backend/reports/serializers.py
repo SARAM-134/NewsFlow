@@ -1,13 +1,7 @@
 from rest_framework import serializers
 from .models.report import Report
-<<<<<<< HEAD
-<<<<<<< HEAD
 from .models.briefing import Briefing
-=======
->>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
-=======
 from .models.briefing import Briefing
->>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 from news.models import Notizia
 
 class NotiziaMinimalReportSerializer(serializers.ModelSerializer):
@@ -32,10 +26,6 @@ class ReportSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # L'utente loggato viene assegnato in automatico nelle views
         return super().create(validated_data)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
 
 class BriefingSerializer(serializers.ModelSerializer):
     """
@@ -47,8 +37,3 @@ class BriefingSerializer(serializers.ModelSerializer):
         model = Briefing
         fields = ['id', 'titolo', 'contenuto', 'categoria', 'categoria_nome', 'data_creazione']
         read_only_fields = ['data_creazione']
-<<<<<<< HEAD
-=======
->>>>>>> 52d5fd0 (feat: add reports module with models, serializers, views, and API endpoints for managing AI-generated reports.)
-=======
->>>>>>> ffa555f (feat: Implement reports module, user registration, profile management, and password reset functionalities.)
