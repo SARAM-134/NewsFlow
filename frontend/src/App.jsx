@@ -788,57 +788,57 @@ function App() {
 
   // NOTIZIE (con colori e sentiment come prima)
   const notizie = [
-    {
-      id: 1,
-      categoria: "DAL MONDO",
-      titolo: "Luci e colori dal Festival d'Oriente",
-      riassunto: "Un'esplosione di tradizioni che unisce i popoli in un abbraccio universale.",
-      immagine: "https://images.pexels.com/photos/36560064/pexels-photo-36560064.jpeg",
+    { 
+      id: 1, 
+      categoria: "DAL MONDO", 
+      titolo: "Luci e colori dal Festival d'Oriente", 
+      riassunto: "Un'esplosione di tradizioni che unisce i popoli in un abbraccio universale.", 
+      immagine: "https://images.pexels.com/photos/36560064/pexels-photo-36560064.jpeg", 
       sentiment: "positivo",
       textColor: "text-blue-500" // Blu
     },
-    {
-      id: 2,
-      categoria: "CULTURA",
-      titolo: "Il Rinascimento Digitale a Firenze",
-      riassunto: "Le opere del Botticelli prendono vita grazie alla realtà aumentata e all'IA.",
-      immagine: "https://images.pexels.com/photos/2372977/pexels-photo-2372977.jpeg",
+    { 
+      id: 2, 
+      categoria: "CULTURA", 
+      titolo: "Il Rinascimento Digitale a Firenze", 
+      riassunto: "Le opere del Botticelli prendono vita grazie alla realtà aumentata e all'IA.", 
+      immagine: "https://images.pexels.com/photos/2372977/pexels-photo-2372977.jpeg", 
       sentiment: "positivo",
       textColor: "text-pink-500" // Rosa
     },
-    {
-      id: 3,
-      categoria: "DESIGN",
-      titolo: "L'estetica del silenzio moderno",
-      riassunto: "Come il minimalismo trasforma le nostre case in oasi di luce e pace.",
-      immagine: "https://images.pexels.com/photos/6445/sign-pencil-black-pencils.jpg",
+    { 
+      id: 3, 
+      categoria: "DESIGN", 
+      titolo: "L'estetica del silenzio moderno", 
+      riassunto: "Come il minimalismo trasforma le nostre case in oasi di luce e pace.", 
+      immagine: "https://images.pexels.com/photos/6445/sign-pencil-black-pencils.jpg", 
       sentiment: "positivo",
       textColor: "text-gray-900" // Nero
     },
-    {
-      id: 4,
-      categoria: "CUCINA",
-      titolo: "I segreti del Sushi millenario",
-      riassunto: "L'arte dei maestri giapponesi arriva finalmente nelle nostre cucine.",
-      immagine: "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg",
+    { 
+      id: 4, 
+      categoria: "CUCINA", 
+      titolo: "I segreti del Sushi millenario", 
+      riassunto: "L'arte dei maestri giapponesi arriva finalmente nelle nostre cucine.", 
+      immagine: "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg", 
       sentiment: "positivo",
       textColor: "text-orange-400" // Arancione
     },
-    {
-      id: 5,
-      categoria: "NATURA",
-      titolo: "Il ritorno delle balene azzurre",
-      riassunto: "Uno spettacolo incredibile avvistato al largo delle coste australiane.",
-      immagine: "https://images.pexels.com/photos/4781938/pexels-photo-4781938.jpeg",
+    { 
+      id: 5, 
+      categoria: "NATURA", 
+      titolo: "Il ritorno delle balene azzurre", 
+      riassunto: "Uno spettacolo incredibile avvistato al largo delle coste australiane.", 
+      immagine: "https://images.pexels.com/photos/4781938/pexels-photo-4781938.jpeg", 
       sentiment: "positivo",
       textColor: "text-green-500" // Verde
     },
-    {
-      id: 6,
-      categoria: "ECONOMIA",
-      titolo: "Crisi dei mercati: crollo improvviso",
-      riassunto: "Le borse europee chiudono in forte calo dopo le ultime decisioni sui tassi.",
-      immagine: "https://images.pexels.com/photos/5833762/pexels-photo-5833762.jpeg",
+    { 
+      id: 6, 
+      categoria: "ECONOMIA", 
+      titolo: "Crisi dei mercati: crollo improvviso", 
+      riassunto: "Le borse europee chiudono in forte calo dopo le ultime decisioni sui tassi.", 
+      immagine: "https://images.pexels.com/photos/5833762/pexels-photo-5833762.jpeg", 
       sentiment: "negativo",
       textColor: "text-red-500" // Rosso
     }
@@ -912,7 +912,7 @@ function App() {
                 <h4 className="text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8">Data Points</h4>
                 <p className="text-2xl font-extralight tracking-tight leading-snug">Interesse per le arti visive in aumento del 18%.</p>
               </div>
-              <button className={`text-[9px] font-bold tracking-[0.4em] uppercase border-b border-white/20 pb-2 self-start transition-all mt-10 ${temaDeepFlow.coloreTema ? `hover:border-pink-500` : `hover:border-white`}`}>
+              <button className={`text-[9px] font-bold tracking-[0.4em] uppercase border-b border-white/20 pb-2 self-start transition-all mt-10 ${ temaDeepFlow.coloreTema ? `hover:border-pink-500` : `hover:border-white` }`}>
                 Esplora {temaDeepFlow.titoloSottile}
               </button>
             </div>
@@ -922,9 +922,10 @@ function App() {
 >>>>>>> 7301184 (Mary: Inizializzato frontend e creata Navbar)
 >>>>>>> c9cec4b (Mary: Inizializzato frontend e creata Navbar)
     </div>
-  )
+  );
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 export default App
@@ -941,3 +942,6 @@ export default App;
 =======
 export default App
 >>>>>>> 0ff4481 (Mary: Inizializzato frontend e creata Navbar)
+=======
+export default App;
+>>>>>>> 4dbc369 (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)

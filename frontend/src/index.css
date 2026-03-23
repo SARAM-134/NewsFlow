@@ -15,6 +15,7 @@
 =======
 >>>>>>> 93957fd (Prima pagina completata)
 @import "tailwindcss";
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -25,6 +26,8 @@
 >>>>>>> 9dd4e9f (Prima pagina completata)
 =======
 >>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
+=======
+>>>>>>> da0014d (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
 /* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -32,6 +35,7 @@
 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -54,6 +58,8 @@
 =======
 >>>>>>> 93957fd (Prima pagina completata)
 =======
+=======
+>>>>>>> 4dbc369 (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
 =======
 >>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
 >>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
@@ -99,4 +105,12 @@
 =======
 }
 >>>>>>> eb783eb (Mary: Inizializzato frontend e creata Navbar)
+<<<<<<< HEAD
 >>>>>>> 962cc7a (Mary: Inizializzato frontend e creata Navbar)
+=======
+=======
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+>>>>>>> da0014d (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
+>>>>>>> 4dbc369 (chore: Risolti conflitti dando priorita' a backend locale e frontend di Mary)
