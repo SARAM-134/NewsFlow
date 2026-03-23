@@ -1,146 +1,291 @@
 import React, { useRef, useState } from 'react';
+
 import Navbar from './components/Navbar';
+
 import InputBar from './components/InputBar';
+
 import NewsCard from './components/NewsCard';
 
+
+
 function App() {
+
   const scrollRef = useRef(null);
 
+
+
   // NOTIZIE (con colori e sentiment come prima)
+
   const notizie = [
+
     { 
+
       id: 1, 
+
       categoria: "DAL MONDO", 
+
       titolo: "Luci e colori dal Festival d'Oriente", 
+
       riassunto: "Un'esplosione di tradizioni che unisce i popoli in un abbraccio universale.", 
+
       immagine: "https://images.pexels.com/photos/36560064/pexels-photo-36560064.jpeg", 
+
       sentiment: "positivo",
+
       textColor: "text-blue-500" // Blu
+
     },
+
     { 
+
       id: 2, 
+
       categoria: "CULTURA", 
+
       titolo: "Il Rinascimento Digitale a Firenze", 
+
       riassunto: "Le opere del Botticelli prendono vita grazie alla realtà aumentata e all'IA.", 
+
       immagine: "https://images.pexels.com/photos/2372977/pexels-photo-2372977.jpeg", 
+
       sentiment: "positivo",
+
       textColor: "text-pink-500" // Rosa
+
     },
+
     { 
+
       id: 3, 
+
       categoria: "DESIGN", 
+
       titolo: "L'estetica del silenzio moderno", 
+
       riassunto: "Come il minimalismo trasforma le nostre case in oasi di luce e pace.", 
+
       immagine: "https://images.pexels.com/photos/6445/sign-pencil-black-pencils.jpg", 
+
       sentiment: "positivo",
+
       textColor: "text-gray-900" // Nero
+
     },
+
     { 
+
       id: 4, 
+
       categoria: "CUCINA", 
+
       titolo: "I segreti del Sushi millenario", 
+
       riassunto: "L'arte dei maestri giapponesi arriva finalmente nelle nostre cucine.", 
+
       immagine: "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg", 
+
       sentiment: "positivo",
+
       textColor: "text-orange-400" // Arancione
+
     },
+
     { 
+
       id: 5, 
+
       categoria: "NATURA", 
+
       titolo: "Il ritorno delle balene azzurre", 
+
       riassunto: "Uno spettacolo incredibile avvistato al largo delle coste australiane.", 
+
       immagine: "https://images.pexels.com/photos/4781938/pexels-photo-4781938.jpeg", 
+
       sentiment: "positivo",
+
       textColor: "text-green-500" // Verde
+
     },
+
     { 
+
       id: 6, 
+
       categoria: "ECONOMIA", 
+
       titolo: "Crisi dei mercati: crollo improvviso", 
+
       riassunto: "Le borse europee chiudono in forte calo dopo le ultime decisioni sui tassi.", 
+
       immagine: "https://images.pexels.com/photos/5833762/pexels-photo-5833762.jpeg", 
+
       sentiment: "negativo",
+
       textColor: "text-red-500" // Rosso
+
     }
+
   ];
 
+
+
   // Configurazione Dinamica per la Sezione DEEP FLOW (Scegli il tema qui)
+
   const [temaDeepFlow, setTemaDeepFlow] = useState({
+
     titoloSottile: "CULTURE", // Titolo a destra
+
     coloreTema: "text-pink-500", // Colore per "Essenza del Flusso" e pulsante (Rosa per Cultura)
+
     testoTitolo: "La riscoperta delle tradizioni <span class='font-medium text-gray-950'>guida</span> il nuovo rinascimento creativo.",
+
     testoDescrizione: "L'analisi mostra un forte interesse per le radici storiche: l'85% degli utenti interagisce con contenuti d'arte digitale."
+
   });
 
+
+
   const scroll = (direction) => {
+
     if (direction === 'left') scrollRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+
     else scrollRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+
   };
 
+
+
   return (
+
     <div className="min-h-screen bg-white font-sans antialiased">
+
       <Navbar />
+
       <main className="max-w-7xl mx-auto px-6 pb-24">
+
         <InputBar />
 
+
+
         {/* --- SEZIONE 1: DAILY BREAKING (TUTTO NERO) --- */}
+
         <section className="mt-16">
+
           <div className="flex items-center gap-4 mb-8">
+
             <h2 className="text-xl tracking-[-0.04em] text-gray-900 uppercase">
+
               <span className="font-light">DAILY</span> <span className="font-bold">BREAKING</span>
+
             </h2>
+
             <div className="h-[1px] flex-1 bg-gray-100"></div>
+
           </div>
+
+
 
           <div className="relative group">
+
             <button onClick={() => scroll('left')} className="absolute left-[-25px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-xl p-4 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">←</button>
+
             <div ref={scrollRef} className="flex gap-8 overflow-x-auto scrollbar-hide pb-10 px-2 scroll-smooth">
+
               {notizie.map((n) => <NewsCard key={n.id} {...n} />)}
+
             </div>
+
             <button onClick={() => scroll('right')} className="absolute right-[-25px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-xl p-4 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">→</button>
+
           </div>
+
         </section>
+
+
 
         {/* --- SEZIONE 2: DEEP FLOW (DINAMICA E COLORATA) --- */}
+
         <section className="mt-24 border-t border-gray-100 pt-16">
+
           <div className="flex items-center gap-4 mb-14">
+
             <h2 className="text-2xl tracking-[-0.05em] text-gray-900 uppercase">
+
               <span className="font-bold">DEEP</span> <span className="font-extralight text-gray-400">FLOW</span>
+
             </h2>
+
             <div className="h-[px] flex-1 bg-gray-100"></div>
+
             <span className="text-[10px] font-bold text-gray-300 tracking-[0.4em] uppercase">{temaDeepFlow.titoloSottile}</span>
+
           </div>
+
+
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
+
             {/* Card Bianca: Il colore dell'etichetta è dinamico */}
+
             <div className="col-span-2 bg-white p-10 rounded-2xl border border-gray-100 shadow-sm">
+
               <span className={`text-[9px] font-bold tracking-[0.3em] uppercase mb-8 block ${temaDeepFlow.coloreTema}`}>
+
                 Essenza del Flusso
+
               </span>
+
               <h3 className="text-3xl font-light tracking-[-0.03em] text-gray-900 mb-6 leading-snug" dangerouslySetInnerHTML={{ __html: temaDeepFlow.testoTitolo }}></h3>
+
               <p className="text-gray-400 text-lg font-light leading-relaxed mb-10 max-w-2xl">
+
                 {temaDeepFlow.testoDescrizione}
+
               </p>
+
               <div className="w-full h-[1px] bg-gray-100 relative overflow-hidden">
+
                 <div className="absolute inset-y-0 left-0 w-3/4 bg-black transition-all duration-[2s]"></div>
+
               </div>
+
             </div>
 
+
+
             {/* Card Nera: Il colore del pulsante al passaggio del mouse è dinamico */}
+
             <div className="bg-black p-10 rounded-2xl text-white flex flex-col justify-between">
+
               <div>
+
                 <h4 className="text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8">Data Points</h4>
+
                 <p className="text-2xl font-extralight tracking-tight leading-snug">Interesse per le arti visive in aumento del 18%.</p>
+
               </div>
+
               <button className={`text-[9px] font-bold tracking-[0.4em] uppercase border-b border-white/20 pb-2 self-start transition-all mt-10 ${ temaDeepFlow.coloreTema ? `hover:border-pink-500` : `hover:border-white` }`}>
+
                 Esplora {temaDeepFlow.titoloSottile}
+
               </button>
+
             </div>
+
           </div>
+
         </section>
+
       </main>
+
     </div>
+
   );
+
 }
+
+
 
 export default App;
