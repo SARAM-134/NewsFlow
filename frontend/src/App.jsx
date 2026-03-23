@@ -16,12 +16,13 @@ function App() {
       try {
         const data = await getNotizie();
         // Se la risposta è paginata di DRF, prenderemo { results: [...] }
-        const articles = data.results || data; 
-        
+        const articles = data.results || data;
+
         // Mappiamo i dati dal backend al formato previsto dal frontend
         const mappedArticles = articles.map(n => ({
           id: n.id,
-          categoria: n.categoria?.nome || "NEWS",
+          categoria: n.categoria_dettaglio?.nome || "NEWS",
+          themeColor: n.categoria_dettaglio?.colore || "#000000",
           titolo: n.titolo,
           riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
           immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500", // Placeholder generico
@@ -114,7 +115,7 @@ function App() {
                 <h4 className="text-[9px] font-bold tracking-[0.3em] text-gray-500 uppercase mb-8">Data Points</h4>
                 <p className="text-2xl font-extralight tracking-tight leading-snug">Interesse per le arti visive in aumento del 18%.</p>
               </div>
-              <button className={`text-[9px] font-bold tracking-[0.4em] uppercase border-b border-white/20 pb-2 self-start transition-all mt-10 ${ temaDeepFlow.coloreTema ? `hover:border-pink-500` : `hover:border-white` }`}>
+              <button className={`text-[9px] font-bold tracking-[0.4em] uppercase border-b border-white/20 pb-2 self-start transition-all mt-10 ${temaDeepFlow.coloreTema ? `hover:border-pink-500` : `hover:border-white`}`}>
                 Esplora {temaDeepFlow.titoloSottile}
               </button>
             </div>

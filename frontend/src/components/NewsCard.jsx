@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 
-function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime = "5" }) {
+function NewsCard({ categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5" }) {
   const [isSaved, setIsSaved] = useState(false);
 
   const toggleSave = (e) => {
     e.stopPropagation();
     setIsSaved(!isSaved);
   };
-
-  // Logica dinamica per i colori basata sul brand
-  const activeColor = textColor || 'text-gray-400';
-  const activeBg = textColor ? textColor.replace('text-', 'bg-') : 'bg-black';
 
   return (
     <div className="group relative min-w-[360px] bg-white flex flex-col cursor-pointer transition-all duration-700 ease-out border-b border-gray-100 pb-8 hover:border-black/10">
@@ -37,7 +33,8 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime 
             viewBox="0 0 24 24"
             strokeWidth={1.2}
             stroke="currentColor"
-            className={`w-4 h-4 transition-transform duration-300 ${isSaved ? `scale-110 ${activeColor}` : 'text-white'}`}
+            className={`w-4 h-4 transition-transform duration-300 ${isSaved ? 'scale-110' : 'text-white'}`}
+            style={isSaved ? { color: themeColor } : {}}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
           </svg>
@@ -48,7 +45,7 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime 
       <div className="flex flex-col flex-grow px-1">
 
         {/* Categoria: Tracking ampio per eleganza */}
-        <span className={`text-[10px] font-bold tracking-[0.3em] uppercase mb-3 ${activeColor}`}>
+        <span className="text-[10px] font-bold tracking-[0.3em] uppercase mb-3" style={{ color: themeColor }}>
           {categoria}
         </span>
 
@@ -66,7 +63,7 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime 
         <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-4">
           <div className="flex items-center gap-3">
             <span className="text-[9px] text-gray-300 uppercase tracking-widest font-medium">AI Flow</span>
-            <div className={`w-1 h-1 rounded-full ${activeBg} animate-pulse`} />
+            <div className="w-1 h-1 rounded-full animate-pulse" style={{ backgroundColor: themeColor }} />
           </div>
 
           {/* Minuti di lettura in basso a destra */}
@@ -80,7 +77,7 @@ function NewsCard({ categoria, titolo, riassunto, immagine, textColor, readTime 
       </div>
 
       {/* Linea di progresso estetica (Flow) sul fondo al passaggio del mouse */}
-      <div className={`absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-1000 ease-in-out ${activeBg}`} />
+      <div className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-1000 ease-in-out" style={{ backgroundColor: themeColor }} />
     </div>
   );
 }
