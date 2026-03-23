@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { getNotizie } from './services/api';
 import Navbar from './components/Navbar';
 import InputBar from './components/InputBar';
 import NewsCard from './components/NewsCard';
@@ -7,63 +8,37 @@ import NewsCard from './components/NewsCard';
 function App() {
   const scrollRef = useRef(null);
 
-  // NOTIZIE (con colori e sentiment come prima)
-  const notizie = [
-    { 
-      id: 1, 
-      categoria: "DAL MONDO", 
-      titolo: "Luci e colori dal Festival d'Oriente", 
-      riassunto: "Un'esplosione di tradizioni che unisce i popoli in un abbraccio universale.", 
-      immagine: "https://images.pexels.com/photos/36560064/pexels-photo-36560064.jpeg", 
-      sentiment: "positivo",
-      textColor: "text-blue-500" // Blu
-    },
-    { 
-      id: 2, 
-      categoria: "CULTURA", 
-      titolo: "Il Rinascimento Digitale a Firenze", 
-      riassunto: "Le opere del Botticelli prendono vita grazie alla realtà aumentata e all'IA.", 
-      immagine: "https://images.pexels.com/photos/2372977/pexels-photo-2372977.jpeg", 
-      sentiment: "positivo",
-      textColor: "text-pink-500" // Rosa
-    },
-    { 
-      id: 3, 
-      categoria: "DESIGN", 
-      titolo: "L'estetica del silenzio moderno", 
-      riassunto: "Come il minimalismo trasforma le nostre case in oasi di luce e pace.", 
-      immagine: "https://images.pexels.com/photos/6445/sign-pencil-black-pencils.jpg", 
-      sentiment: "positivo",
-      textColor: "text-gray-900" // Nero
-    },
-    { 
-      id: 4, 
-      categoria: "CUCINA", 
-      titolo: "I segreti del Sushi millenario", 
-      riassunto: "L'arte dei maestri giapponesi arriva finalmente nelle nostre cucine.", 
-      immagine: "https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg", 
-      sentiment: "positivo",
-      textColor: "text-orange-400" // Arancione
-    },
-    { 
-      id: 5, 
-      categoria: "NATURA", 
-      titolo: "Il ritorno delle balene azzurre", 
-      riassunto: "Uno spettacolo incredibile avvistato al largo delle coste australiane.", 
-      immagine: "https://images.pexels.com/photos/4781938/pexels-photo-4781938.jpeg", 
-      sentiment: "positivo",
-      textColor: "text-green-500" // Verde
-    },
-    { 
-      id: 6, 
-      categoria: "ECONOMIA", 
-      titolo: "Crisi dei mercati: crollo improvviso", 
-      riassunto: "Le borse europee chiudono in forte calo dopo le ultime decisioni sui tassi.", 
-      immagine: "https://images.pexels.com/photos/5833762/pexels-photo-5833762.jpeg", 
-      sentiment: "negativo",
-      textColor: "text-red-500" // Rosso
-    }
-  ];
+  const [notizie, setNotizie] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const data = await getNotizie();
+        // Se la risposta è paginata di DRF, prenderemo { results: [...] }
+        const articles = data.results || data; 
+        
+        // Mappiamo i dati dal backend al formato previsto dal frontend
+        const mappedArticles = articles.map(n => ({
+          id: n.id,
+          categoria: n.categoria?.nome || "NEWS",
+          titolo: n.titolo,
+          riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
+          immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500", // Placeholder generico
+          sentiment: n.sentiment_ai || "neutrale",
+          textColor: n.sentiment_ai === "positivo" ? "text-green-500" : n.sentiment_ai === "negativo" ? "text-red-500" : "text-gray-500"
+        }));
+
+        setNotizie(mappedArticles);
+      } catch (err) {
+        console.error("Errore nel caricamento notizie", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   // Configurazione Dinamica per la Sezione DEEP FLOW (Scegli il tema qui)
   const [temaDeepFlow, setTemaDeepFlow] = useState({
@@ -96,7 +71,13 @@ function App() {
           <div className="relative group">
             <button onClick={() => scroll('left')} className="absolute left-[-25px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-xl p-4 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">←</button>
             <div ref={scrollRef} className="flex gap-8 overflow-x-auto scrollbar-hide pb-10 px-2 scroll-smooth">
-              {notizie.map((n) => <NewsCard key={n.id} {...n} />)}
+              {loading ? (
+                <div className="text-gray-400 font-light italic">Caricamento in corso dal Database...</div>
+              ) : notizie.length > 0 ? (
+                notizie.map((n) => <NewsCard key={n.id} {...n} />)
+              ) : (
+                <div className="text-gray-400 font-light italic">Nessuna notizia trovata nel Database.</div>
+              )}
             </div>
             <button onClick={() => scroll('right')} className="absolute right-[-25px] top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-100 shadow-xl p-4 rounded-full hover:bg-black hover:text-white transition-all opacity-0 group-hover:opacity-100">→</button>
           </div>

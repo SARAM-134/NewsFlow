@@ -23,9 +23,6 @@ class NotiziaSerializer(serializers.ModelSerializer):
     categoria_dettaglio = CategoriaSerializer(source='categoria', read_only=True)
     fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
     tags_dettaglio = TagSerializer(source='tags', many=True, read_only=True) 
-    categoria_dettaglio = CategoriaSerializer(source='categoria', read_only=True)
-    fonte_dettaglio = FonteSerializer(source='fonte', read_only=True)
-    tags_dettaglio = TagSerializer(source='tags', many=True, read_only=True) 
 
     class Meta:
         model = Notizia
@@ -34,11 +31,5 @@ class NotiziaSerializer(serializers.ModelSerializer):
             'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
             'categoria', 'categoria_dettaglio', 
             'fonte', 'fonte_dettaglio',
-            'tags', 'tags_dettaglio'
-            'id', 'titolo', 'contenuto', 'url_originale', 'url_hash', 
-            'data_pubblicazione', 'extract_ai', 'sentiment_ai', 'provider_ai',
-            'categoria', 'categoria_dettaglio', 
-            'fonte', 'fonte_dettaglio',
-            'tags_dettaglio'
             'tags', 'tags_dettaglio'
         ]

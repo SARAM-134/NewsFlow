@@ -21,7 +21,6 @@ class CategoriaAdmin(admin.ModelAdmin):
     list_display = ("nome", "slug", "colore")
     prepopulated_fields = {"slug": ("nome",)}
     actions = [action_genera_briefing]
-    actions = [action_genera_briefing]
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -42,5 +41,4 @@ class NotiziaAdmin(admin.ModelAdmin):
     list_filter = ('fonte', 'categoria', 'sentiment_ai', 'data_pubblicazione')
     search_fields = ('titolo', 'contenuto')
     date_hierarchy = 'data_pubblicazione'
-    filter_horizontal = ('tags',)
     filter_horizontal = ('tags',)

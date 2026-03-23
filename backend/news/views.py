@@ -19,21 +19,16 @@ class FonteListView(generics.ListAPIView):
 
 class NotiziaListView(generics.ListAPIView):
     """
-    Lista delle notizie con supporto per:
-    - Ricerca testuale (?search=parola)
-    - Ordinamento (?ordering=-data_pubblicazione)
-    - Filtro per categoria (?categoria=ID)
-    - Filtro per fonte (?fonte=ID)
+    Lista delle notizie.
     """
     serializer_class = NotiziaSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['titolo', 'contenuto', 'extract_ai']
+    search_fields = ['titolo', 'contenuto_originale', 'extract_ai']
     ordering_fields = ['data_pubblicazione']
     ordering = ['-data_pubblicazione']
 
     def get_queryset(self):
-        queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
         queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
         
         # Filtri custom via Query Params
@@ -50,8 +45,4 @@ class NotiziaDetailView(generics.RetrieveAPIView):
     queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
     serializer_class = NotiziaSerializer
     permission_classes = [permissions.AllowAny]
-    lookup_field = 'url_hash' 
-    queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
-    serializer_class = NotiziaSerializer
-    permission_classes = [permissions.AllowAny]
-    lookup_field = 'url_hash' 
+    lookup_field = 'url_hash'
