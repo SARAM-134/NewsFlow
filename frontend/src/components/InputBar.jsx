@@ -110,8 +110,6 @@ function InputBar() {
           </svg>
         </button>
       </div>
-
-      {/* Il bottone ENTRA è stato rimosso come richiesto */}
     </div>
   );
 <<<<<<< HEAD
