@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+/* Nasconde la barra di scorrimento per Chrome, Safari e Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Nasconde la barra di scorrimento per IE, Edge e Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
