@@ -41,6 +41,7 @@ class Notizia(models.Model):
     )
     provider_ai = models.CharField(max_length=100, blank=True, null=True)
     ai_processata = models.BooleanField(default=False)
+    vettore_embedding = models.JSONField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Notizia'

@@ -7,6 +7,28 @@ from news.models import Notizia, Tag
 
 from news.ai_utils import call_ai, get_active_ai_config
 
+def get_embedding(text: str, api_key: str) -> list:
+    """
+    Genera un vettore embedding per il testo fornito usando Google Gemini.
+    """
+    if not api_key:
+        return None
+    
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        # Usiamo il modello di embedding standard di Google
+        result = genai.embed_content(
+            model="models/gemini-embedding-001",
+            content=text,
+            task_type="retrieval_document",
+            title="NewsFlow Article"
+        )
+        return result['embedding']
+    except Exception:
+        return None
+
+
 class Command(BaseCommand):
     help = "Elabora le notizie pendenti con AI (Gemini / Groq / Ollama)"
 
@@ -15,6 +37,12 @@ class Command(BaseCommand):
             '--all',
             action='store_true',
             help='Loop continuo finché tutti gli articoli pendenti non sono elaborati',
+        )
+        parser.add_argument(
+            '--limit',
+            type=int,
+            default=20,
+            help='Numero massimo di articoli da elaborare in questa esecuzione (default: 20)'
         )
 
     def handle(self, *args, **options):
@@ -42,7 +70,7 @@ class Command(BaseCommand):
         standard_map = {t.lower(): t for t in db_tags}
 
         processa_tutto = options.get('all', False)
-        batch_size = 20
+        batch_size = options.get('limit', 20)
 
         while True:
             notizie = list(Notizia.objects.filter(ai_processata=False)[:batch_size])
@@ -90,6 +118,14 @@ class Command(BaseCommand):
                     notizia.sentiment_ai = data.get('sentiment', 'neutrale').lower()
                     notizia.provider_ai = active_provider
                     notizia.ai_processata = True
+                    
+                    # Generazione Embedding (Solo se il provider è Gemini, altrimenti fallback)
+                    if active_provider == 'gemini':
+                        self.stdout.write("    → Generazione embedding...")
+                        # Embed diamo un mix di titolo e contenuto per catturare il concetto
+                        text_to_embed = f"{notizia.titolo}. {notizia.contenuto_originale[:500]}"
+                        notizia.vettore_embedding = get_embedding(text_to_embed, active_key)
+
                     notizia.save()
 
                     # Tags

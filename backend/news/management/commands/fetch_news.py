@@ -9,10 +9,19 @@ from django.utils import timezone
 from django.db import IntegrityError
 from news.models.notizia import Notizia
 from news.models.fonte import Fonte
+from news.models.categoria import Categoria
 import requests
 
 class Command(BaseCommand):
     help = 'Estrae notizie e immagini da fonti RSS e API usando Trafilatura'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--limit',
+            type=int,
+            default=15,
+            help='Numero massimo di articoli per ogni fonte RSS (default: 15)'
+        )
 
     def get_image_url(self, entry):
         """Estrae l'URL dell'immagine con logica di fallback."""
@@ -54,6 +63,7 @@ class Command(BaseCommand):
         news_api_config = getattr(settings, 'NEWS_CONFIG', {})
         API_KEY = news_api_config.get("NEWS_API_KEY")
         QUERY_DEFAULT = "tecnologia"
+        limit = kwargs.get('limit', 15)
 
         fonti_attive = Fonte.objects.filter(attiva=True, tipo='rss')
         
@@ -62,7 +72,8 @@ class Command(BaseCommand):
             self.stdout.write(f"Analizzando: {fonte.nome}")
             feed = feedparser.parse(fonte.url_feed)
             
-            for entry in feed.entries[:25]:
+            nuove_notizie = 0
+            for entry in feed.entries[:limit]:
                 url_articolo = getattr(entry, 'link', '')
                 if not url_articolo: continue
 
@@ -77,7 +88,9 @@ class Command(BaseCommand):
                 # Parsing data
                 data_pub = timezone.now()
                 if hasattr(entry, 'published_parsed') and entry.published_parsed:
-                    data_pub = timezone.make_aware(datetime(*entry.published_parsed[:6]))
+                    try:
+                        data_pub = timezone.make_aware(datetime(*entry.published_parsed[:6]))
+                    except Exception: pass
 
                 try:
                     Notizia.objects.create(
@@ -90,6 +103,7 @@ class Command(BaseCommand):
                         immagine_url=self.get_image_url(entry),
                         data_pubblicazione=data_pub
                     )
+                    nuove_notizie += 1
                 except IntegrityError:
                     continue
 
@@ -120,4 +134,4 @@ class Command(BaseCommand):
                         data_pubblicazione=timezone.now()
                     )
 
-        self.stdout.write(self.style.SUCCESS("Processo completato!"))
+        self.stdout.write(self.style.SUCCESS(f"Processo completato! ({nuove_api} notizie da API)"))

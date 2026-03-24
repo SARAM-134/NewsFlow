@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CategoriaListView, FonteListView, NotiziaListView, NotiziaDetailView
+from .views import CategoriaListView, FonteListView, NotiziaListView, NotiziaDetailView, SemanticSearchView
 
 urlpatterns = [
     # Rotte per Fonti e Categorie
@@ -8,6 +8,6 @@ urlpatterns = [
     
     # Rotte pubbliche per le Notizie
     path('notizie/', NotiziaListView.as_view(), name='notizia-list'),
-    path('notizie/<str:url_hash>/', NotiziaDetailView.as_view(), name='notizia-detail'),
+    path('notizie/search-semantic/', SemanticSearchView.as_view(), name='notizia-semantic-search'),
     path('notizie/<str:url_hash>/', NotiziaDetailView.as_view(), name='notizia-detail'),
 ]
