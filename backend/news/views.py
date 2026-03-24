@@ -1,8 +1,10 @@
-from rest_framework import generics, permissions, filters
+from rest_framework import generics, permissions, filters, status
+from accounts.views import IsAdminRole
 from .models.categoria import Categoria
 from .models.fonte import Fonte
 from .models.notizia import Notizia
-from .serializers import CategoriaSerializer, FonteSerializer, NotiziaSerializer
+from .models.tag import Tag
+from .serializers import CategoriaSerializer, FonteSerializer, NotiziaSerializer, TagSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import numpy as np
@@ -119,3 +121,107 @@ class SemanticSearchView(APIView):
 
         except Exception as e:
             return Response({"error": f"Errore durante la ricerca semantica: {str(e)}"}, status=500)
+
+
+# --- VISTE ADMIN (Gestione Contenuti) ---
+
+class CategoriaCreateUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    """Admin CRUD per una singola categoria."""
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [IsAdminRole]
+
+class FonteAdminListCreateView(generics.ListCreateAPIView):
+    """Admin lista e creazione fonti."""
+    queryset = Fonte.objects.all()
+    serializer_class = FonteSerializer
+    permission_classes = [IsAdminRole]
+
+class FonteAdminDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Admin gestione singola fonte."""
+    queryset = Fonte.objects.all()
+    serializer_class = FonteSerializer
+    permission_classes = [IsAdminRole]
+
+class FonteFetchNowView(APIView):
+    """Admin trigger fetch manuale su una fonte."""
+    permission_classes = [IsAdminRole]
+
+    def post(self, request, pk):
+        try:
+            fonte = Fonte.objects.get(pk=pk)
+            # Iniziamo un fetch asincrono o sincrono? Per ora sincrono per semplicità nel test
+            from django.core.management import call_command
+            # Nota: usiamo --limit per non bloccare troppo la richiesta HTTP
+            call_command('fetch_news', limit=5)
+            return Response({"message": f"Fetch avviato per {fonte.nome}"}, status=status.HTTP_200_OK)
+        except Fonte.DoesNotExist:
+            return Response({"error": "Fonte non trovata"}, status=status.HTTP_404_NOT_FOUND)
+
+class NotiziaDeleteView(generics.DestroyAPIView):
+    """Admin eliminazione notizia."""
+    queryset = Notizia.objects.all()
+    serializer_class = NotiziaSerializer
+    permission_classes = [IsAdminRole]
+    lookup_field = 'url_hash'
+
+class NotiziaRegenerateAIView(APIView):
+    """Admin rigenera riassunto AI per una notizia."""
+    permission_classes = [IsAdminRole]
+
+    def post(self, request, url_hash):
+        try:
+            notizia = Notizia.objects.get(url_hash=url_hash)
+            # Resettiamo e forziamo l'elaborazione
+            notizia.ai_processata = False
+            notizia.save()
+            
+            from django.core.management import call_command
+            # Chiamiamo process_ai solo per questo articolo?
+            # Per ora lanciamo il comando globale che prenderà questo (e altri pendenti)
+            call_command('process_ai', limit=5)
+            
+            return Response({"message": "Elaborazione AI riavviata."}, status=status.HTTP_200_OK)
+        except Notizia.DoesNotExist:
+            return Response({"error": "Notizia non trovata"}, status=status.HTTP_404_NOT_FOUND)
+
+class TagListView(generics.ListAPIView):
+    """Ritorna tutti i tag (almeno per utenti registrati)."""
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+# --- VISTE STATISTICHE (Dashboard Admin) ---
+
+class StatsView(APIView):
+    """GET: Statistiche generali del catalogo news."""
+    permission_classes = [IsAdminRole]
+
+    def get(self, request):
+        from django.db.models import Count
+        
+        total_notizie = Notizia.objects.count()
+        per_categoria = Notizia.objects.values('categoria__nome').annotate(count=Count('id')).order_by('-count')
+        fonti_attive = Fonte.objects.filter(attiva=True).count()
+        notizie_ai = Notizia.objects.filter(ai_processata=True).count()
+
+        return Response({
+            "total_notizie": total_notizie,
+            "notizie_elaborate_ai": notizie_ai,
+            "fonti_attive": fonti_attive,
+            "notizie_per_categoria": per_categoria
+        })
+
+class StatsIngestionView(APIView):
+    """GET: Dettagli tecnici sull'ingestion delle fonti (per admin)."""
+    permission_classes = [IsAdminRole]
+
+    def get(self, request):
+        fonti = Fonte.objects.all().values(
+            'nome', 'ultimo_fetch', 'num_errori_consecutivi', 'attiva'
+        ).order_by('-ultimo_fetch')
+
+        return Response({
+            "ingestion_status": fonti
+        })

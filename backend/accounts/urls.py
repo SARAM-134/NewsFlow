@@ -8,7 +8,8 @@ from .views import (
     AdminUserManagementView,
     AdminUserDetailView,
     PasswordResetRequestView,
-    PasswordResetConfirmView
+    PasswordResetConfirmView,
+    LogoutView
 )
 
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='user_register'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 
     # --- Utente Connesso ---
     path('me/', UserProfileView.as_view(), name='user_profile'),
