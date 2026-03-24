@@ -1,142 +1,129 @@
 import json
+import time
 import google.generativeai as genai
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.utils.text import slugify
 from news.models import Notizia, Tag
 
 class Command(BaseCommand):
     help = "Elabora le notizie pendenti usando l'AI (Gemini) per riassunti, sentiment e tag"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--all',
+            action='store_true',
+            help='Loop continuo finché tutti gli articoli non processati sono stati elaborati',
+        )
+
     def handle(self, *args, **options):
-        # 1. Configurazione Gemini
+        # 1. Setup Gemini
         if not hasattr(settings, 'AI_CONFIG'):
-            self.stdout.write(self.style.ERROR("ERRORE: Dizionario AI_CONFIG non trovato in settings.py"))
+            self.stdout.write(self.style.ERROR("ERRORE: AI_CONFIG non trovato in settings.py"))
             return
 
         api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
         if not api_key:
-            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
-        api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
-        if not api_key:
-            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
+            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY mancante"))
             return
 
         genai.configure(api_key=api_key)
+
+        # Cerca chiave utente: usa quella del primo superuser che ne ha una,
+        # altrimenti fallback alla chiave globale di settings
+        def get_api_key_for_user(user_auth=None):
+            """Ritorna la chiave Gemini più appropriata per un dato utente."""
+            if user_auth and hasattr(user_auth, 'profilo') and user_auth.profilo.gemini_api_key:
+                return user_auth.profilo.gemini_api_key
+            # Cerca un superuser con chiave configurata
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+            for su in User.objects.filter(is_superuser=True):
+                if hasattr(su, 'profilo') and su.profilo.gemini_api_key:
+                    return su.profilo.gemini_api_key
+            # Fallback globale
+            return api_key
+
+        # Per il processo batch usiamo la chiave migliore disponibile
+        active_key = get_api_key_for_user()
+        genai.configure(api_key=active_key)
         model = genai.GenerativeModel(settings.AI_CONFIG.get('MODEL_NAME', 'gemini-1.5-flash'))
 
-        # 2. Recupero Tag Standard dal Database
-        # Questo permette all'admin di aggiungere nuovi tag senza toccare il codice
+        # 2. Tag disponibili nel DB
         db_tags = list(Tag.objects.values_list('nome', flat=True))
-        if not db_tags:
-            self.stdout.write(self.style.WARNING("ATTENZIONE: Nessun tag trovato nel database. L'IA non potrà taggare nulla."))
-            # Forniamo una lista minima di fallback se il db è vuoto? 
-            # Preferibile lasciare vuoto per forzare l'admin a popolarlo.
-        
         tags_str = ", ".join(db_tags)
+        standard_map = {t.lower(): t for t in db_tags}
 
-        # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
-        # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione per evitare timeout)
-        # Selezioniamo le notizie non ancora processate (limite a 5 per ogni esecuzione)
-        notizie = Notizia.objects.filter(ai_processata=False)[:5]
-        
-        if not notizie.exists():
-            self.stdout.write(self.style.SUCCESS("Nessuna notizia da elaborare."))
-            return
+        processa_tutto = options.get('all', False)
+        batch_size = 20
 
-        for notizia in notizie:
-            self.stdout.write(f"--- Elaborazione AI: {notizia.titolo} ---")
-            
-            # Prompt evoluto con tag dinamici dal DB
-            prompt = f"""
-            Analizza questa notizia e restituisci un JSON puro.
-            Regole rigorose per i 'tags':
-            - Scegli al massimo 5 tag esclusivamente dalla seguente lista approvata: 
-              [{tags_str}]
-            - È severamente VIETATO usare nomi propri di persone, aziende, città o luoghi specifici come tag.
-            
-            Campi JSON richiesti:
-            - 'riassunto': massimo 3 righe.
-            - 'sentiment': una tra POSITIVE, NEGATIVE, NEUTRAL.
-            - 'tags': lista di stringhe (solo dalla lista sopra).
-            
-            Titolo: {notizia.titolo}
-            Contenuto: {notizia.contenuto_originale}
-            # Prompt evoluto con tag dinamici dal DB
-            prompt = f"""
-            Analizza questa notizia e restituisci un JSON puro.
-            Regole rigorose per i 'tags':
-            - Scegli al massimo 5 tag esclusivamente dalla seguente lista approvata: 
-              [{tags_str}]
-            - È severamente VIETATO usare nomi propri di persone, aziende, città o luoghi specifici come tag.
-            
-            Campi JSON richiesti:
-            - 'riassunto': massimo 3 righe.
-            - 'sentiment': una tra POSITIVE, NEGATIVE, NEUTRAL.
-            - 'tags': lista di stringhe (solo dalla lista sopra).
-            
-            Titolo: {notizia.titolo}
-            Contenuto: {notizia.contenuto}
-            Contenuto: {notizia.contenuto_originale}
-            """
+        while True:
+            # Prende SOLO articoli NON ancora processati
+            notizie = list(Notizia.objects.filter(ai_processata=False)[:batch_size])
 
-            try:
-                response = model.generate_content(prompt)
+            if not notizie:
+                self.stdout.write(self.style.SUCCESS("✅ Tutti gli articoli sono già stati processati."))
+                break
+
+            pending_total = Notizia.objects.filter(ai_processata=False).count()
+            self.stdout.write(f"\n🔄 Batch di {len(notizie)} articoli | Rimangono in coda: {pending_total}")
+
+            for notizia in notizie:
+                self.stdout.write(f"  → {notizia.titolo[:70]}")
+
+                prompt = f"""
+                Analizza questa notizia e restituisci SOLO un JSON puro (senza markdown).
                 
-                # Pulizia della risposta per estrarre solo il JSON
-                raw_text = response.text.strip()
-                if "```json" in raw_text:
-                    raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
-                elif "```" in raw_text:
-                    raw_text = raw_text.split("```")[1].strip()
-
-                data = json.loads(raw_text)
-
-                # 3. Aggiornamento Notizia
-                notizia.extract_ai = data.get('riassunto', '')
-                notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
-                # 2. Aggiornamento Notizia coi NOMI CORRETTI
-                # 3. Aggiornamento Notizia
-                notizia.extract_ai = data.get('riassunto', '')
-                notizia.sentiment_ai = data.get('sentiment', 'NEUTRAL')
-                notizia.provider_ai = "Google Gemini"
-                notizia.ai_processata = True
-                notizia.save()
-
-                # 4. Gestione Tag Filtrata (Lookup dinamico nel DB)
-                tag_nomi_raw = data.get('tags', [])
+                Regole:
+                - 'riassunto': massimo 3 righe in italiano.
+                - 'sentiment': esattamente una tra: positivo, negativo, neutrale.
+                - 'tags': lista di max 5 stringhe scelte da: [{tags_str}]
+                  NON usare nomi propri. Solo dalla lista fornita.
                 
-                # Mappa case-insensitive per far corrispondere i tag di Gemini al DB
-                # Usiamo i nomi esatti salvati nel DB
-                standard_map = {t.lower(): t for t in db_tags}
-                tag_nomi_validi = []
-                for t in tag_nomi_raw:
-                    t_lower = t.lower().strip()
-                    if t_lower in standard_map:
-                        tag_nomi_validi.append(standard_map[t_lower])
-                
-                for nome in tag_nomi_validi:
-                    # Usiamo get perché sappiamo che il tag esiste nel DB (grazie al filtro sopra)
-                    try:
-                        tag_obj = Tag.objects.get(nome=nome)
-                        notizia.tags.add(tag_obj)
-                    except Tag.DoesNotExist:
-                        continue
-                tag_nomi = data.get('tags', [])
-                for nome in tag_nomi:
-                    tag_slug = slugify(nome)
-                    tag_obj, created = Tag.objects.get_or_create(
-                        slug=tag_slug,
-                        defaults={
-                            'nome': nome,
-                            'categoria': notizia.categoria  # Eredita la categoria dell'articolo
-                        }
-                    )
-                    notizia.tags.add(tag_obj)
+                Titolo: {notizia.titolo}
+                Contenuto: {notizia.contenuto_originale[:3000]}
+                """
 
-                self.stdout.write(self.style.SUCCESS(f"OK: Elaborazione completata per '{notizia.titolo}'"))
+                try:
+                    response = model.generate_content(prompt)
+                    raw_text = response.text.strip()
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"ERRORE durante l'elaborazione di '{notizia.titolo}': {str(e)}"))
+                    # Pulizia del JSON dalla risposta
+                    if "```json" in raw_text:
+                        raw_text = raw_text.split("```json")[-1].split("```")[0].strip()
+                    elif "```" in raw_text:
+                        raw_text = raw_text.split("```")[1].strip()
 
-        self.stdout.write(self.style.SUCCESS("Fine sessione elaborazione AI."))
+                    data = json.loads(raw_text)
+
+                    notizia.extract_ai = data.get('riassunto', '')
+                    notizia.sentiment_ai = data.get('sentiment', 'neutrale').lower()
+                    notizia.provider_ai = "Google Gemini"
+                    notizia.ai_processata = True
+                    notizia.save()
+
+                    # Tags
+                    for t in data.get('tags', []):
+                        t_lower = t.lower().strip()
+                        if t_lower in standard_map:
+                            try:
+                                notizia.tags.add(Tag.objects.get(nome=standard_map[t_lower]))
+                            except Tag.DoesNotExist:
+                                pass
+
+                    self.stdout.write(self.style.SUCCESS(f"    ✓ OK"))
+                    time.sleep(1)  # Pausa per evitare rate limit API
+
+                except Exception as e:
+                    self.stdout.write(self.style.ERROR(f"    ✗ ERRORE: {str(e)[:80]}"))
+
+            # Se non si vuole processare tutto, esci dopo il primo batch
+            if not processa_tutto:
+                self.stdout.write(self.style.SUCCESS("\nFine batch. Usa --all per processare tutto in automatico."))
+                break
+
+            # Piccola pausa tra i batch per non saturare le API
+            time.sleep(2)
+
+        done = Notizia.objects.filter(ai_processata=True).count()
+        total = Notizia.objects.count()
+        self.stdout.write(self.style.SUCCESS(f"\n📊 Risultato finale: {done}/{total} articoli processati."))

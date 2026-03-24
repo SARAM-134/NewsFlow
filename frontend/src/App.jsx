@@ -15,17 +15,15 @@ function App() {
     const fetchNews = async () => {
       try {
         const data = await getNotizie();
-        // Se la risposta è paginata di DRF, prenderemo { results: [...] }
         const articles = data.results || data;
 
-        // Mappiamo i dati dal backend al formato previsto dal frontend
         const mappedArticles = articles.map(n => ({
           id: n.id,
           categoria: n.categoria_dettaglio?.nome || "NEWS",
           themeColor: n.categoria_dettaglio?.colore || "#000000",
           titolo: n.titolo,
           riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
-          immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500", // Placeholder generico
+          immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500",
           sentiment: n.sentiment_ai || "neutrale",
           textColor: n.sentiment_ai === "positivo" ? "text-green-500" : n.sentiment_ai === "negativo" ? "text-red-500" : "text-gray-500"
         }));
@@ -38,7 +36,14 @@ function App() {
       }
     };
 
+    // Caricamento iniziale
     fetchNews();
+
+    // Polling automatico ogni 30 secondi per vedere i nuovi dati elaborati dall'AI
+    const intervalId = setInterval(fetchNews, 30000);
+
+    // Cleanup: ferma il polling quando il componente viene smontato
+    return () => clearInterval(intervalId);
   }, []);
 
   // Configurazione Dinamica per la Sezione DEEP FLOW (Scegli il tema qui)

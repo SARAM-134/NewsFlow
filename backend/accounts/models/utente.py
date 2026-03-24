@@ -19,6 +19,11 @@ class Utente(models.Model):
     role = models.CharField(max_length=20, choices=RUOLI, default='giornalista')
     nome = models.CharField(max_length=100, blank=True)
     cognome = models.CharField(max_length=100, blank=True)
+    gemini_api_key = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Chiave API Gemini personale dell'utente. Se fornita, viene usata al posto di quella globale."
+    )
     categorie_preferite = models.ManyToManyField(
         'news.Categoria',
         related_name='followers',
