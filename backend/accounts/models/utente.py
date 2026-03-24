@@ -16,14 +16,24 @@ class Utente(models.Model):
         on_delete=models.CASCADE,
         related_name='profilo'
     )
+    AI_PROVIDERS = [
+        ('gemini', 'Google Gemini'),
+        ('groq', 'Groq (Llama 3)'),
+        ('ollama', 'Ollama (Locale)'),
+    ]
+
     role = models.CharField(max_length=20, choices=RUOLI, default='giornalista')
     nome = models.CharField(max_length=100, blank=True)
     cognome = models.CharField(max_length=100, blank=True)
-    gemini_api_key = models.CharField(
-        max_length=200,
-        blank=True,
-        help_text="Chiave API Gemini personale dell'utente. Se fornita, viene usata al posto di quella globale."
-    )
+
+    # Configurazione AI
+    ai_provider = models.CharField(max_length=20, choices=AI_PROVIDERS, default='gemini')
+    gemini_api_key = models.CharField(max_length=200, blank=True)
+    groq_api_key = models.CharField(max_length=200, blank=True)
+    # Ollama è locale, non richiede una chiave API
+    ollama_model = models.CharField(max_length=100, blank=True, default='llama3',
+                                    help_text="Nome del modello Ollama (es. llama3, mistral, gemma)")
+
     categorie_preferite = models.ManyToManyField(
         'news.Categoria',
         related_name='followers',

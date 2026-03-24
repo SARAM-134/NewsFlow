@@ -30,12 +30,17 @@ class UtenteSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='auth.email', read_only=True)
     is_active = serializers.BooleanField(source='auth.is_active', read_only=True)
     categorie_preferite_dettaglio = CategoriaSerializer(source='categorie_preferite', many=True, read_only=True)
-    # write_only=True per sicurezza: la chiave viene accettata ma mai restituita in GET
+    # Le chiavi API sono write_only per sicurezza: non vengono mai restituite in GET
     gemini_api_key = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    groq_api_key = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = Utente
-        fields = ['id', 'email', 'role', 'nome', 'cognome', 'is_active', 'gemini_api_key', 'categorie_preferite', 'categorie_preferite_dettaglio']
+        fields = [
+            'id', 'email', 'role', 'nome', 'cognome', 'is_active',
+            'ai_provider', 'gemini_api_key', 'groq_api_key', 'ollama_model',
+            'categorie_preferite', 'categorie_preferite_dettaglio'
+        ]
         read_only_fields = ['id', 'email', 'role', 'is_active']
 
 # --- SERIALIZER REGISTRAZIONE PUBBLICA ---
