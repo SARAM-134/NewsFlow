@@ -5,116 +5,115 @@ import re
 from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.db import IntegrityError
 from news.models.notizia import Notizia
 from news.models.fonte import Fonte
+import requests
 
 class Command(BaseCommand):
-    help = 'Estrae notizie e immagini da fonti RSS usando Trafilatura per il testo completo'
+    help = 'Estrae notizie e immagini da fonti RSS e API usando Trafilatura'
 
     def get_image_url(self, entry):
-        """Tenta di estrarre l'URL dell'immagine da vari campi del feed RSS."""
-        # 1. Cerca in media_content (Standard RSS avanzato)
-        if 'media_content' in entry and len(entry.media_content) > 0:
+        """Estrae l'URL dell'immagine con logica di fallback."""
+        if 'media_content' in entry and entry.media_content:
             return entry.media_content[0].get('url')
         
-        # 2. Cerca in enclosures (Standard podcast/allegati)
-        if 'enclosures' in entry and len(entry.enclosures) > 0:
+        if 'enclosures' in entry and entry.enclosures:
             for enc in entry.enclosures:
                 if enc.get('type', '').startswith('image/'):
                     return enc.get('url')
 
-        # 3. Fallback: Cerca un tag <img> nel summary o description tramite Regex
         content = entry.get('summary', entry.get('description', ''))
         match = re.search(r'<img [^>]*src="([^"]+)"', content)
-        if match:
-            return match.group(1)
-        
+        return match.group(1) if match else None
+
+    def fetch_full_content(self, url):
+        """Helper per scaricare e pulire il testo di un articolo."""
+        try:
+            downloaded = trafilatura.fetch_url(url)
+            if downloaded:
+                return trafilatura.extract(downloaded)
+        except Exception:
+            return None
         return None
 
+    def get_news_from_api(self, api_key, query, language='it', page_size=10):
+        url = "https://newsapi.org/v2/everything"
+        params = {'q': query, 'language': language, 'pageSize': page_size, 'apiKey': api_key}
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            return response.json().get('articles', [])
+        except Exception as e:
+            self.stderr.write(f"Errore API: {e}")
+            return []
+
     def handle(self, *args, **kwargs):
-        # Prendiamo solo le fonti attive e di tipo RSS dal DB
+        # Configurazione API (Sposta queste in settings.py o variabili d'ambiente!)
+        API_KEY = "IL_TUO_API_KEY_QUI"
+        QUERY_DEFAULT = "tecnologia"
+
         fonti_attive = Fonte.objects.filter(attiva=True, tipo='rss')
         
-        if not fonti_attive.exists():
-            self.stdout.write(self.style.WARNING("Nessuna fonte RSS attiva trovata nel database."))
-            return
-
+        # --- LOGICA RSS ---
         for fonte in fonti_attive:
-            self.stdout.write(f"\nAnalizzando la fonte: {fonte.nome} ({fonte.url_feed})")
+            self.stdout.write(f"Analizzando: {fonte.nome}")
+            feed = feedparser.parse(fonte.url_feed)
             
-            try:
-                # Parsing del feed RSS
-                feed = feedparser.parse(fonte.url_feed)
-                nuove_notizie = 0
+            for entry in feed.entries[:25]:
+                url_articolo = getattr(entry, 'link', '')
+                if not url_articolo: continue
+
+                url_hash = hashlib.sha256(url_articolo.encode('utf-8')).hexdigest()
                 
-                # Limitiamo a 15 articoli per fonte per non sovraccaricare il server
-                for entry in feed.entries[:15]:
-                    titolo = getattr(entry, 'title', 'Senza Titolo')
-                    url_articolo = getattr(entry, 'link', '')
-                    
-                    if not url_articolo:
-                        continue
+                # Usiamo get_or_create o update_or_create per atomicità
+                if Notizia.objects.filter(url_hash=url_hash).exists():
+                    continue
 
-                    # Generiamo l'hash univoco SHA-256
-                    url_hash = hashlib.sha256(url_articolo.encode('utf-8')).hexdigest()
-                    
-                    if Notizia.objects.filter(url_hash=url_hash).exists():
-                        continue
+                testo = self.fetch_full_content(url_articolo)
+                if not testo: continue
 
-                    self.stdout.write(f"Scaricando: {titolo[:40]}...")
-                    
-                    # Estrazione immagine dall'RSS
-                    img_url = self.get_image_url(entry)
+                # Parsing data
+                data_pub = timezone.now()
+                if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                    data_pub = timezone.make_aware(datetime(*entry.published_parsed[:6]))
 
-                    # Estrazione del testo profondo dell'articolo
-                    scaricato = trafilatura.fetch_url(url_articolo)
-                    if not scaricato:
-                        self.stdout.write(self.style.WARNING("  -> Impossibile scaricare la pagina HTML per il testo."))
-                        continue
-                        
-                    contenuto_pulito = trafilatura.extract(scaricato)
-                    
-                    if not contenuto_pulito:
-                        self.stdout.write(self.style.WARNING("  -> Testo principale non trovato."))
-                        continue
-
-                    # Recupero della data
-                    data_pub = timezone.now()
-                    if hasattr(entry, 'published_parsed') and entry.published_parsed:
-                        try:
-                            dt = datetime(*entry.published_parsed[:6])
-                            data_pub = timezone.make_aware(dt)
-                        except Exception:
-                            pass # Fallback a timezone.now() già impostato
-
-                    # Salvataggio nel database
+                try:
                     Notizia.objects.create(
                         fonte=fonte,
                         categoria=fonte.categoria,
-                        titolo=titolo,
-                        contenuto_originale=contenuto_pulito,      # Il testo vero letto con Trafilatura
+                        titolo=getattr(entry, 'title', 'Senza Titolo'),
+                        contenuto_originale=testo,
                         url_originale=url_articolo,
                         url_hash=url_hash,
-                        immagine_url=img_url,            # L'immagine estratta dall'RSS
+                        immagine_url=self.get_image_url(entry),
                         data_pubblicazione=data_pub
                     )
-                    nuove_notizie += 1
-                
-                self.stdout.write(self.style.SUCCESS(f"Aggiunte {nuove_notizie} notizie per {fonte.nome}."))
-                
-                # Resetta contatore errori al successo
-                fonte.ultimo_fetch = timezone.now()
-                fonte.num_errori_consecutivi = 0
-                fonte.save()
+                except IntegrityError:
+                    continue # Gestione duplicati concorrenti
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Errore critico sulla fonte {fonte.nome}: {e}"))
-                fonte.num_errori_consecutivi += 1
-                
-                # Disattiva se ci sono troppi errori
-                if fonte.num_errori_consecutivi >= 5:
-                    fonte.attiva = False
-                    self.stdout.write(self.style.ERROR(f"Fonte {fonte.nome} disattivata per troppi errori."))
-                fonte.save()
+        # --- LOGICA API ---
+        self.stdout.write("\nRecupero notizie tramite API...")
+        articles = self.get_news_from_api(API_KEY, QUERY_DEFAULT)
+        
+        for art in articles:
+            url_art = art.get('url')
+            u_hash = hashlib.sha256(url_art.encode('utf-8')).hexdigest()
 
-        self.stdout.write(self.style.SUCCESS("Parsing completato!"))
+            if not Notizia.objects.filter(url_hash=u_hash).exists():
+                # Anche per le API, usiamo Trafilatura per avere il testo completo
+                # invece del semplice 'content' troncato dell'API.
+                full_txt = self.fetch_full_content(url_art) or art.get('description', '')
+                
+                Notizia.objects.create(
+                    fonte=None,
+                    categoria="API",
+                    titolo=art.get('title', 'Senza Titolo'),
+                    contenuto_originale=full_txt,
+                    url_originale=url_art,
+                    url_hash=u_hash,
+                    immagine_url=art.get('urlToImage'),
+                    data_pubblicazione=timezone.now()
+                )
+
+        self.stdout.write(self.style.SUCCESS("Processo completato!"))
