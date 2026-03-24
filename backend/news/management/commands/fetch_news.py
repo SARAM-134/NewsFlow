@@ -105,33 +105,43 @@ class Command(BaseCommand):
                     )
                     nuove_notizie += 1
                 except IntegrityError:
-                    continue
+                    continue 
+
+            self.stdout.write(self.style.SUCCESS(f"Aggiunte {nuove_notizie} notizie per {fonte.nome}."))
 
         # --- LOGICA API ---
-        if API_KEY and API_KEY != "IL_TUO_API_KEY_QUI":
+        if API_KEY and API_KEY != "IL_TUO_API_KEY_QUI" and API_KEY != "6b6798f000000000000000000000000b":
             self.stdout.write("\nRecupero notizie tramite API...")
-            articles = self.get_news_from_api(API_KEY, QUERY_DEFAULT)
+            # Cerchiamo o creiamo una categoria "NewsAPI" per gli articoli da API
+            cat_api, _ = Categoria.objects.get_or_create(nome="NewsAPI", defaults={'slug': 'newsapi'})
             
-            # Recuperiamo una categoria di default per le API se possibile (es. Tecnologia)
-            from news.models.categoria import Categoria
-            cat_api, _ = Categoria.objects.get_or_create(nome='Tech', defaults={'slug': 'tech', 'colore': '#2980b9'})
-
+            articles = self.get_news_from_api(API_KEY, QUERY_DEFAULT, page_size=limit)
+            
+            nuove_api = 0
             for art in articles:
                 url_art = art.get('url')
+                if not url_art: continue
                 u_hash = hashlib.sha256(url_art.encode('utf-8')).hexdigest()
 
                 if not Notizia.objects.filter(url_hash=u_hash).exists():
                     full_txt = self.fetch_full_content(url_art) or art.get('description', '')
-                    
-                    Notizia.objects.create(
-                        fonte=None,
-                        categoria=cat_api,
-                        titolo=art.get('title', 'Senza Titolo'),
-                        contenuto_originale=full_txt,
-                        url_originale=url_art,
-                        url_hash=u_hash,
-                        immagine_url=art.get('urlToImage'),
-                        data_pubblicazione=timezone.now()
-                    )
+                    if not full_txt: continue
 
-        self.stdout.write(self.style.SUCCESS(f"Processo completato! ({nuove_api} notizie da API)"))
+                    try:
+                        Notizia.objects.create(
+                            fonte=None,
+                            categoria=cat_api,
+                            titolo=art.get('title', 'Senza Titolo'),
+                            contenuto_originale=full_txt,
+                            url_originale=url_art,
+                            url_hash=u_hash,
+                            immagine_url=art.get('urlToImage'),
+                            data_pubblicazione=timezone.now()
+                        )
+                        nuove_api += 1
+                    except IntegrityError:
+                        continue
+
+            self.stdout.write(self.style.SUCCESS(f"Processo completato! ({nuove_api} notizie da API)"))
+        else:
+            self.stdout.write(self.style.WARNING("\nNewsAPI non configurata o chiave mancante (saltata)."))

@@ -29,6 +29,28 @@ def get_embedding(text: str, api_key: str) -> list:
         return None
 
 
+def get_embedding(text: str, api_key: str) -> list:
+    """
+    Genera un vettore embedding per il testo fornito usando Google Gemini.
+    """
+    if not api_key:
+        return None
+    
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        # Usiamo il modello di embedding standard di Google
+        result = genai.embed_content(
+            model="models/gemini-embedding-001",
+            content=text,
+            task_type="retrieval_document",
+            title="NewsFlow Article"
+        )
+        return result['embedding']
+    except Exception:
+        return None
+
+
 class Command(BaseCommand):
     help = "Elabora le notizie pendenti con AI (Gemini / Groq / Ollama)"
 
