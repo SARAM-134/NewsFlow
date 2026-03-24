@@ -4,7 +4,7 @@
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
-
+ 
 /* Nasconde la barra di scorrimento per IE, Edge e Firefox */
 .scrollbar-hide {
     -ms-overflow-style: none;
