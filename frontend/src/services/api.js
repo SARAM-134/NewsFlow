@@ -21,6 +21,7 @@ api.interceptors.request.use((config) => {
 // --- AUTH ---
 export const login = (credentials) => api.post('auth/login/', credentials);
 export const getProfile = () => api.get('auth/me/');
+export const updateProfile = (data) => api.patch('auth/me/', data);
 export const logout = (refreshToken) => api.post('auth/logout/', { refresh: refreshToken });
 
 // --- NOTIZIE & RICERCA ---
