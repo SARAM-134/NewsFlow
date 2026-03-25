@@ -29,6 +29,11 @@ export const getCategories = () => api.get('categorie/');
 export const getTags = () => api.get('tags/');
 export const searchSemantic = (q) => api.get('notizie/search-semantic/', { params: { q } });
 
+// --- INTERAZIONI (SALVATI) ---
+export const getSavedNews = () => api.get('interactions/saved/');
+export const saveNews = (notiziaId) => api.post('interactions/saved/', { notizia: notiziaId });
+export const deleteSavedNews = (id) => api.delete(`interactions/saved/${id}/`);
+
 // --- ADMIN & STATS ---
 export const getStats = () => api.get('stats/');
 export const getStatsIngestion = () => api.get('stats/ingestion/');

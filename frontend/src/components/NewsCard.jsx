@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import { saveNews, deleteSavedNews } from '../services/api';
 
-function NewsCard({ categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5", url }) {
-  const [isSaved, setIsSaved] = useState(false);
+function NewsCard({ id, categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5", url, initialIsSaved = false }) {
+  const [isSaved, setIsSaved] = useState(initialIsSaved);
+  const [loading, setLoading] = useState(false);
 
-  const toggleSave = (e) => {
+  const toggleSave = async (e) => {
     e.stopPropagation();
-    setIsSaved(!isSaved);
+    if (loading) return;
+    setLoading(true);
+    try {
+      if (isSaved) {
+        await deleteSavedNews(id);
+      } else {
+        await saveNews(id);
+      }
+      setIsSaved(!isSaved);
+    } catch (err) {
+      console.error("Errore salvataggio:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClick = () => {

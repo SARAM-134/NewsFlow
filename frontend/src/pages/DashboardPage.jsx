@@ -1,25 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import api, { getStats, getStatsIngestion, triggerFetch } from '../services/api';
+import api, { getStats, getStatsIngestion, triggerFetch, getSavedNews } from '../services/api';
 import Navbar from '../components/Navbar';
+import NewsCard from '../components/NewsCard';
 
 const DashboardPage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
+  const [savedNews, setSavedNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      const [resStats, resSaved] = await Promise.all([getStats(), getSavedNews()]);
+      setStats(resStats.data);
+      // Trasformiamo i dati delle notizie salvate per il componente NewsCard
+      const mapped = (resSaved.data.results || resSaved.data).map(item => {
+        const n = item.notizia_dettaglio || {};
+        return {
+          id: n.id,
+          categoria: n.categoria_dettaglio?.nome || "NEWS",
+          themeColor: n.categoria_dettaglio?.colore || "#000000",
+          titolo: n.titolo,
+          riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
+          immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500",
+          url: n.url_originale || n.url,
+          initialIsSaved: true
+        };
+      });
+      setSavedNews(mapped);
+    } catch (err) {
+      console.error("Errore caricamento dashboard:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await getStats();
-        setStats(res.data);
-      } catch (err) {
-        console.error("Errore nel caricamento statistiche:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
+    fetchDashboardData();
   }, []);
 
   const statItems = [
@@ -59,13 +78,20 @@ const DashboardPage = () => {
         </div>
 
         {/* Sezione Contenuto Principale: Salvati */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 min-h-[300px] mb-12 flex flex-col">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 min-h-[300px] mb-12">
           <div className="flex items-center justify-between mb-10 border-b border-gray-50 pb-8">
             <h2 className="text-xl font-bold tracking-tight uppercase">Le tue Notizie Salvate</h2>
-            <button className="text-[10px] font-bold text-gray-300 uppercase tracking-widest hover:text-black transition-colors">Vedi tutte</button>
+            <button onClick={fetchDashboardData} className="text-[10px] font-bold text-gray-300 uppercase tracking-widest hover:text-black transition-colors">🔄 Aggiorna</button>
           </div>
-          <div className="flex flex-col items-center justify-center flex-1 text-center py-10">
-            <p className="text-gray-400 text-sm font-light italic">Nessuna notizia salvata.</p>
+          
+          <div className="flex gap-8 overflow-x-auto scrollbar-hide pb-6 px-2">
+            {savedNews.length > 0 ? (
+              savedNews.map(n => <NewsCard key={n.id} {...n} />)
+            ) : (
+              <div className="flex flex-col items-center justify-center w-full py-10 text-center">
+                <p className="text-gray-400 text-sm font-light italic">Nessuna notizia salvata nel tuo archivio personale.</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -77,7 +103,7 @@ const DashboardPage = () => {
   );
 };
 
-// Sotto-componente per la gestione Admin
+// Sotto-componente per la gestione Admin (immutato per brevità ma integrato con triggerFetch reale)
 const AdminIngestionSection = () => {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +132,6 @@ const AdminIngestionSection = () => {
         <h2 className="text-xl font-bold tracking-tight uppercase text-blue-600">Gestione Ingestion (Admin)</h2>
         <button onClick={fetchIngestion} className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:text-black transition-colors">🔄 Aggiorna</button>
       </div>
-      
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>
