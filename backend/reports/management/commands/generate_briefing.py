@@ -52,10 +52,18 @@ class Command(BaseCommand):
 
             # Prompt per il "Direttore di Redazione"
             prompt = f"""
-            Agisci da Direttore di redazione per la sezione {cat.nome}. 
-            Leggi questi {len(notizie)} riassunti di notizie delle ultime 24 ore e scrivimi un Briefing/Newsletter di esattamente 3 paragrafi con le tendenze principali di oggi.
-            Usa un tono professionale, informativo e coinvolgente.
-            Restituisci solo il testo del briefing, senza introduzioni o saluti.
+            Agisci come Caporedattore della sezione {cat.nome}.
+            Il tuo compito è analizzare le notizie delle ultime 24 ore e produrre un Report Aggregato per Argomenti (Cluster Analysis).
+
+            Hai a disposizione {len(notizie)} notizie.
+            Identifica i Macro-Argomenti principali (Topic) che emergono da queste notizie.
+            
+            Per ciascun Macro-Argomento identificato:
+            1. Usa un titolo descrittivo (es. "Trend Mercati", "Sviluppi AI").
+            2. Scrivi un'analisi approfondita che colleghi e aggreghi le diverse notizie relative a quel tema.
+            
+            Il tono deve essere professionale, analitico e utile per un giornalista che deve aggiornarsi rapidamente.
+            Non fare semplici elenchi. Crea una narrazione strutturata per temi.
 
             Notizie:
             {summaries_text}

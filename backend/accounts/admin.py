@@ -6,6 +6,16 @@ from .models.utente import Utente
 
 
 # ─────────────────────────────────────────────
+#  Inline per AuthAdmin
+# ─────────────────────────────────────────────
+class UtenteInline(admin.StackedInline):
+    """Permette di vedere e modificare il Profilo (e le Categorie) dentro l'User Admin"""
+    model = Utente
+    can_delete = False
+    verbose_name_plural = 'Profilo Giornalista'
+    filter_horizontal = ("categorie_preferite",)
+
+# ─────────────────────────────────────────────
 #  AuthAdmin
 # ─────────────────────────────────────────────
 @admin.register(Auth)
@@ -25,6 +35,9 @@ class AuthAdmin(BaseUserAdmin):
                                      "groups", "user_permissions")}),
         ("Date",         {"fields": ("date_joined", "last_login")}),
     )
+
+    # Colleghiamo l'inline qui per vedere tutto in una schermata
+    inlines = (UtenteInline,)
 
     # Campi visualizzati nella pagina di creazione
     add_fieldsets = (
@@ -67,5 +80,6 @@ class UtenteAdmin(admin.ModelAdmin):
     ordering      = ("-auth__date_joined",)
 
     # Campi del form di dettaglio/modifica
-    fields = ("auth", "role", "nome", "cognome")
+    fields = ("auth", "role", "nome", "cognome", "categorie_preferite")
     readonly_fields = ("auth",)
+    filter_horizontal = ("categorie_preferite",)

@@ -1,33 +1,14 @@
 from django.db import models
-from django.conf import settings
+from news.models import Categoria
 
 class Utente(models.Model):
-    """
-    Modello profilo utente, legato 1:1 al modello Auth.
-    Rappresenta la tabella 'Utente' descritta nel PDF.
-    """
-    RUOLI = [
-        ('giornalista', 'Giornalista'),
-        ('admin', 'Admin'),
-    ]
-
-    auth = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='profilo'
-    )
-    role = models.CharField(max_length=20, choices=RUOLI, default='giornalista')
+    auth = models.OneToOneField('accounts.Auth', on_delete=models.CASCADE, related_name='profilo')
+    role = models.CharField(max_length=20, default='giornalista')
     nome = models.CharField(max_length=100, blank=True)
     cognome = models.CharField(max_length=100, blank=True)
-    categorie_preferite = models.ManyToManyField(
-        'news.Categoria',
-        related_name='followers',
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = 'Profilo Utente'
-        verbose_name_plural = 'Profili Utenti'
+    
+    # Nuova relazione per gestire le specializzazioni/interessi del giornalista
+    categorie_preferite = models.ManyToManyField(Categoria, blank=True, related_name='utenti_interessati')
 
     def __str__(self):
-        return f"{self.nome} {self.cognome}".strip() or str(self.auth)
+        return f"{self.nome} {self.cognome}"
