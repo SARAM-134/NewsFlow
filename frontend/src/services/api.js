@@ -19,9 +19,9 @@ api.interceptors.request.use((config) => {
 });
 
 // --- AUTH ---
-export const login = (credentials) => api.post('accounts/login/', credentials);
-export const getProfile = () => api.get('accounts/perfil/');
-export const logout = (refreshToken) => api.post('accounts/logout/', { refresh: refreshToken });
+export const login = (credentials) => api.post('auth/login/', credentials);
+export const getProfile = () => api.get('auth/me/');
+export const logout = (refreshToken) => api.post('auth/logout/', { refresh: refreshToken });
 
 // --- NOTIZIE & RICERCA ---
 export const getNotizie = (params) => api.get('notizie/', { params });
