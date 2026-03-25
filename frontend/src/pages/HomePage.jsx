@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { getNotizie } from '../services/api';
+import api, { getNotizie } from '../services/api';
 import Navbar from '../components/Navbar';
 import InputBar from '../components/InputBar';
 import NewsCard from '../components/NewsCard';
@@ -15,12 +15,8 @@ function HomePage() {
     // Carichiamo le categorie disponibili
     const fetchCategories = async () => {
       try {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
-        const res = await fetch(`${baseUrl}/categorie/`);
-        if (res.ok) {
-          const data = await res.json();
-          setCategorie(data.results || data);
-        }
+        const response = await api.get('categorie/');
+        setCategorie(response.data.results || response.data);
       } catch (error) {
         console.error("Errore caricamento categorie:", error);
       }
