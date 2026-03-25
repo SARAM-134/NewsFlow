@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Vite espone le variabili d'ambiente con import.meta.env
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/';
 
 const api = axios.create({
@@ -10,14 +9,29 @@ const api = axios.create({
   },
 });
 
-export const getNotizie = async () => {
-  try {
-    const response = await api.get('notizie/');
-    return response.data; // DRF con pagination restituisce { count, next, previous, results: [...] } ... o direttamente la lista.
-  } catch (error) {
-    console.error("Errore durante il fetch delle notizie:", error);
-    throw error;
+// Interceptor per aggiungere il token JWT se presente
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-};
+  return config;
+});
+
+// --- AUTH ---
+export const login = (credentials) => api.post('accounts/login/', credentials);
+export const getProfile = () => api.get('accounts/perfil/');
+export const logout = (refreshToken) => api.post('accounts/logout/', { refresh: refreshToken });
+
+// --- NOTIZIE & RICERCA ---
+export const getNotizie = (params) => api.get('notizie/', { params });
+export const getCategories = () => api.get('categorie/');
+export const getTags = () => api.get('tags/');
+export const searchSemantic = (q) => api.get('notizie/search-semantic/', { params: { q } });
+
+// --- ADMIN & STATS ---
+export const getStats = () => api.get('stats/');
+export const getStatsIngestion = () => api.get('stats/ingestion/');
+export const triggerFetch = (id) => api.post(`admin/fonti/${id}/fetch/`);
 
 export default api;
