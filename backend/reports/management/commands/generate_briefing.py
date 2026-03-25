@@ -1,27 +1,30 @@
-import google.generativeai as genai
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
 from news.models import Notizia, Categoria
 from reports.models import Briefing
+from news.ai_utils import call_ai, get_active_ai_config
 
 class Command(BaseCommand):
     help = "Genera un Briefing/Newsletter di 3 paragrafi per ogni categoria basato sulle notizie delle ultime 24 ore."
 
     def handle(self, *args, **options):
-        # 1. Configurazione Gemini
         if not hasattr(settings, 'AI_CONFIG'):
             self.stdout.write(self.style.ERROR("ERRORE: Dizionario AI_CONFIG non trovato in settings.py"))
             return
 
-        api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
-        if not api_key:
-            self.stdout.write(self.style.ERROR("ERRORE: GEMINI_API_KEY non configurata o vuota in AI_CONFIG"))
+        # 1. Risoluzione Provider e Chiave
+        active_provider, active_key, active_model, active_ollama_model = get_active_ai_config()
+
+        if not active_key and active_provider != 'ollama':
+            self.stdout.write(self.style.ERROR(
+                "ERRORE: Nessuna chiave API trovata. "
+                "Imposta la chiave nel profilo del superuser o in AI_CONFIG."
+            ))
             return
 
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel(settings.AI_CONFIG.get('MODEL_NAME', 'gemini-1.5-flash'))
+        self.stdout.write(self.style.SUCCESS(f"🤖 Provider AI selezionato: {active_provider.upper()}"))
 
         # 2. Iterazione Categorie
         categorie = Categoria.objects.all()
@@ -62,11 +65,16 @@ class Command(BaseCommand):
             """
 
             try:
-                response = model.generate_content(prompt)
-                contenuto_briefing = response.text.strip()
+                contenuto_briefing = call_ai(
+                    provider=active_provider,
+                    api_key=active_key,
+                    model_name=active_model,
+                    prompt=prompt,
+                    ollama_model=active_ollama_model
+                )
 
                 if not contenuto_briefing:
-                    self.stdout.write(self.style.ERROR(f"Risposta vuota da Gemini per {cat.nome}"))
+                    self.stdout.write(self.style.ERROR(f"Risposta vuota da {active_provider.upper()} per {cat.nome}"))
                     continue
 
                 # 3. Salvataggio Briefing
@@ -86,6 +94,6 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"OK: Briefing generato per {cat.nome}"))
 
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"ERRORE Gemini per {cat.nome}: {str(e)}"))
+                self.stdout.write(self.style.ERROR(f"ERRORE {active_provider.upper()} per {cat.nome}: {str(e)}"))
 
         self.stdout.write(self.style.SUCCESS("Fine sessione generazione Briefing."))

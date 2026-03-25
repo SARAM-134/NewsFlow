@@ -1,48 +1,11 @@
 import json
 import time
-import google.generativeai as genai
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from news.models import Notizia, Tag
 
 
-def call_ai(provider: str, api_key: str, model_name: str, prompt: str, ollama_model: str = 'llama3') -> str:
-    """
-    Router universale verso il provider AI corretto.
-    Supporta: gemini, groq, ollama
-    """
-    if provider == 'gemini':
-        genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-flash-latest')
-        response = model.generate_content(prompt)
-        return response.text
-
-    elif provider == 'groq':
-        from groq import Groq
-        client = Groq(api_key=api_key)
-        response = client.chat.completions.create(
-            model='openai/gpt-oss-120b',
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.choices[0].message.content
-
-    elif provider == 'ollama':
-        # Ollama è compatibile con l'API OpenAI — gira in locale su port 11434
-        from openai import OpenAI
-        client = OpenAI(
-            base_url='http://localhost:11434/v1',
-            api_key='ollama',  # Placeholder, non usato ma richiesto dall'SDK
-        )
-        response = client.chat.completions.create(
-            model=ollama_model or 'llama3',
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.choices[0].message.content
-
-    else:
-        raise ValueError(f"Provider AI non supportato: '{provider}'")
-
+from news.ai_utils import call_ai, get_active_ai_config
 
 class Command(BaseCommand):
     help = "Elabora le notizie pendenti con AI (Gemini / Groq / Ollama)"
@@ -60,36 +23,7 @@ class Command(BaseCommand):
             return
 
         # --- Risoluzione Provider e Chiave ---
-        User = get_user_model()
-        active_provider = None
-        active_key = None
-        active_ollama_model = 'llama3'
-        active_model = settings.AI_CONFIG.get('MODEL_NAME', '')
-
-        for su in User.objects.filter(is_superuser=True).select_related('profilo'):
-            if not hasattr(su, 'profilo'):
-                continue
-            p = su.profilo
-            provider = p.ai_provider
-
-            if provider == 'gemini' and p.gemini_api_key:
-                active_provider = 'gemini'
-                active_key = p.gemini_api_key
-                break
-            elif provider == 'groq' and p.groq_api_key:
-                active_provider = 'groq'
-                active_key = p.groq_api_key
-                break
-            elif provider == 'ollama':
-                active_provider = 'ollama'
-                active_key = None
-                active_ollama_model = p.ollama_model or 'llama3'
-                break
-
-        # Fallback a settings globale (Gemini)
-        if not active_provider:
-            active_provider = 'gemini'
-            active_key = settings.AI_CONFIG.get('GEMINI_API_KEY', '')
+        active_provider, active_key, active_model, active_ollama_model = get_active_ai_config()
 
         if not active_key and active_provider != 'ollama':
             self.stdout.write(self.style.ERROR(

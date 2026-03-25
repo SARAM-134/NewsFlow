@@ -25,33 +25,42 @@ def seed_fonti():
     print("✅ Categorie (7) pronte.")
 
     fonti_data = [
-        # CRONACA
+        # CRONACA & MONDO
         {'nome': 'Il Post', 'url': 'https://www.ilpost.it/feed/', 'cat': cat_cronaca},
         {'nome': 'ANSA Top News', 'url': 'https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml', 'cat': cat_cronaca},
         {'nome': 'SkyTG24', 'url': 'https://tg24.sky.it/rss/tg24_mondo.xml', 'cat': cat_cronaca},
+        {'nome': 'BBC News World', 'url': 'http://feeds.bbci.co.uk/news/world/rss.xml', 'cat': cat_cronaca},
+        {'nome': 'CNN International', 'url': 'http://rss.cnn.com/rss/edition_world.rss', 'cat': cat_cronaca},
         
         # ECONOMIA
         {'nome': 'Il Sole 24 Ore', 'url': 'https://www.ilsole24ore.com/rss/economia.xml', 'cat': cat_economia},
         {'nome': 'Milano Finanza', 'url': 'https://www.milanofinanza.it/rss/mf_rss.xml', 'cat': cat_economia},
+        {'nome': 'Financial Times News', 'url': 'https://www.ft.com/?format=rss', 'cat': cat_economia},
         
         # TECH
         {'nome': 'Wired Italia', 'url': 'https://www.wired.it/feed/rss', 'cat': cat_tech},
         {'nome': 'HDBlog', 'url': 'https://www.hdblog.it/feed/', 'cat': cat_tech},
+        {'nome': 'TechCrunch', 'url': 'https://techcrunch.com/feed/', 'cat': cat_tech},
+        {'nome': 'The Verge', 'url': 'https://www.theverge.com/rss/index.xml', 'cat': cat_tech},
         
-        # CULTURA
+        # CULTURA / INTRATTENIMENTO
         {'nome': 'Artribune', 'url': 'https://www.artribune.com/feed/', 'cat': cat_cultura},
         {'nome': 'Rolling Stone', 'url': 'https://www.rollingstone.it/feed/', 'cat': cat_cultura},
+        {'nome': 'Pitchfork', 'url': 'https://pitchfork.com/feed/feed-all/', 'cat': cat_cultura},
         
         # SPORT
         {'nome': 'Gazzetta dello Sport', 'url': 'https://www.gazzetta.it/rss/home.xml', 'cat': cat_sport},
+        {'nome': 'ESPN News', 'url': 'https://www.espn.com/espn/rss/news', 'cat': cat_sport},
         
         # SCIENZA / NATURA
         {'nome': 'Focus.it', 'url': 'https://www.focus.it/rss/scienza', 'cat': cat_scienza},
         {'nome': 'Le Scienze', 'url': 'https://www.lescienze.it/rss/all/rss.xml', 'cat': cat_scienza},
+        {'nome': 'National Geographic', 'url': 'https://www.nationalgeographic.com/rss/index.xml', 'cat': cat_scienza},
 
         # LIFESTYLE / DESIGN
         {'nome': 'AD Italia', 'url': 'https://www.ad-italia.it/feed/rss', 'cat': cat_lifestyle},
         {'nome': 'Vanity Fair', 'url': 'https://www.vanityfair.it/feed/rss', 'cat': cat_lifestyle},
+        {'nome': 'Design Milk', 'url': 'https://design-milk.com/feed/', 'cat': cat_lifestyle},
     ]
 
     for data in fonti_data:

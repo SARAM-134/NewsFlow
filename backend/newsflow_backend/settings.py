@@ -198,6 +198,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 AI_CONFIG = {
     "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
     "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
-    "MODEL_NAME": os.environ.get("AI_MODEL_NAME", "gemini-flash-latest"),
     "MAX_LINES_SUMMARY": 3,
+}
+
+NEWS_CONFIG = {
+    "NEWS_API_KEY": os.environ.get("NEWS_API_KEY", "IL_TUO_API_KEY_QUI"),
 }

@@ -4,6 +4,7 @@ import trafilatura
 import re
 from datetime import datetime
 from django.core.management.base import BaseCommand
+from django.conf import settings
 from django.utils import timezone
 from django.db import IntegrityError
 from news.models.notizia import Notizia
@@ -49,8 +50,9 @@ class Command(BaseCommand):
             return []
 
     def handle(self, *args, **kwargs):
-        # Configurazione API (Sposta queste in settings.py o variabili d'ambiente!)
-        API_KEY = "IL_TUO_API_KEY_QUI"
+        # Configurazione API da settings
+        news_api_config = getattr(settings, 'NEWS_CONFIG', {})
+        API_KEY = news_api_config.get("NEWS_API_KEY")
         QUERY_DEFAULT = "tecnologia"
 
         fonti_attive = Fonte.objects.filter(attiva=True, tipo='rss')
@@ -66,7 +68,6 @@ class Command(BaseCommand):
 
                 url_hash = hashlib.sha256(url_articolo.encode('utf-8')).hexdigest()
                 
-                # Usiamo get_or_create o update_or_create per atomicità
                 if Notizia.objects.filter(url_hash=url_hash).exists():
                     continue
 
@@ -90,30 +91,33 @@ class Command(BaseCommand):
                         data_pubblicazione=data_pub
                     )
                 except IntegrityError:
-                    continue # Gestione duplicati concorrenti
+                    continue
 
         # --- LOGICA API ---
-        self.stdout.write("\nRecupero notizie tramite API...")
-        articles = self.get_news_from_api(API_KEY, QUERY_DEFAULT)
-        
-        for art in articles:
-            url_art = art.get('url')
-            u_hash = hashlib.sha256(url_art.encode('utf-8')).hexdigest()
+        if API_KEY and API_KEY != "IL_TUO_API_KEY_QUI":
+            self.stdout.write("\nRecupero notizie tramite API...")
+            articles = self.get_news_from_api(API_KEY, QUERY_DEFAULT)
+            
+            # Recuperiamo una categoria di default per le API se possibile (es. Tecnologia)
+            from news.models.categoria import Categoria
+            cat_api, _ = Categoria.objects.get_or_create(nome='Tech', defaults={'slug': 'tech', 'colore': '#2980b9'})
 
-            if not Notizia.objects.filter(url_hash=u_hash).exists():
-                # Anche per le API, usiamo Trafilatura per avere il testo completo
-                # invece del semplice 'content' troncato dell'API.
-                full_txt = self.fetch_full_content(url_art) or art.get('description', '')
-                
-                Notizia.objects.create(
-                    fonte=None,
-                    categoria="API",
-                    titolo=art.get('title', 'Senza Titolo'),
-                    contenuto_originale=full_txt,
-                    url_originale=url_art,
-                    url_hash=u_hash,
-                    immagine_url=art.get('urlToImage'),
-                    data_pubblicazione=timezone.now()
-                )
+            for art in articles:
+                url_art = art.get('url')
+                u_hash = hashlib.sha256(url_art.encode('utf-8')).hexdigest()
+
+                if not Notizia.objects.filter(url_hash=u_hash).exists():
+                    full_txt = self.fetch_full_content(url_art) or art.get('description', '')
+                    
+                    Notizia.objects.create(
+                        fonte=None,
+                        categoria=cat_api,
+                        titolo=art.get('title', 'Senza Titolo'),
+                        contenuto_originale=full_txt,
+                        url_originale=url_art,
+                        url_hash=u_hash,
+                        immagine_url=art.get('urlToImage'),
+                        data_pubblicazione=timezone.now()
+                    )
 
         self.stdout.write(self.style.SUCCESS("Processo completato!"))
