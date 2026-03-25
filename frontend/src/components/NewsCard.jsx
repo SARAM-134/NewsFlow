@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { saveNews, deleteSavedNews } from '../services/api';
 
 function NewsCard({ id, categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5", url, initialIsSaved = false }) {
