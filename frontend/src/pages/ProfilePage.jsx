@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getCategories, getProfile, api } from '../services/api'; // api is default export
+import api, { getCategories, getProfile } from '../services/api'; // api is default export
 import Navbar from '../components/Navbar';
 
 const ProfilePage = () => {
