@@ -1,7 +1,5 @@
 from rest_framework import serializers
-from .models.report import Report
-from .models.briefing import Briefing
-from .models.briefing import Briefing
+from .models import Report, Briefing
 from news.models import Notizia
 
 class NotiziaMinimalReportSerializer(serializers.ModelSerializer):

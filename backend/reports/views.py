@@ -1,8 +1,5 @@
 from rest_framework import generics, permissions
-from .models.report import Report
-from .models.briefing import Briefing
-from .serializers import ReportSerializer, BriefingSerializer
-from .models.briefing import Briefing
+from .models import Report, Briefing
 from .serializers import ReportSerializer, BriefingSerializer
 
 class ReportListCreateView(generics.ListCreateAPIView):

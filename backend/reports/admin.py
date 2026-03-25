@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models.report import Report
-from .models.briefing import Briefing
+from .models import Report, Briefing
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):

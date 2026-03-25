@@ -1,35 +1,29 @@
-// 1. Importi gli strumenti per cambiare pagina
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
-// 2. Importi i tuoi pezzi di codice (i file .jsx che hai creato)
-import Navbar from './components/Navbar';
-import LoginPage from './pages/LoginPage';
-import InputBar from './components/InputBar';
-// ... import NewsCard etc.
+const LoginPage = () => {
+  const navigate = useNavigate();
 
-function App() {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Simuliamo un login e andiamo alla dashboard
+    navigate('/dashboard');
+  };
+
   return (
-    <Router>
-      <div className="App">
-        {/* Qui dentro metti la logica per le rotte */}
-        <Routes>
-          
-          {/* QUANDO VAI SU /login MOSTRA SOLO IL LOGIN */}
-          <Route path="/login" element={<LoginPage />} />
-
-          {/* QUANDO SEI SULLA HOME (/) MOSTRA NAVBAR + BARRA + NEWS */}
-          <Route path="/" element={
-            <>
-              <Navbar /> 
-              <InputBar />
-              {/* Qui aggiungi il codice delle tue news che avevi prima */}
-            </>
-          } />
-
-        </Routes>
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <h1 className="text-3xl font-serif font-bold mb-8">Accesso NewsFlow</h1>
+        <form onSubmit={handleLogin} className="flex flex-col gap-4 w-full max-w-sm px-6">
+          <input type="email" placeholder="Email" className="p-3 border border-gray-200 rounded" />
+          <input type="password" placeholder="Password" className="p-3 border border-gray-200 rounded" />
+          <button type="submit" className="bg-black text-white py-3 rounded uppercase tracking-widest text-xs font-bold hover:bg-gray-800">Accedi</button>
+        </form>
       </div>
-    </Router>
+    </div>
   );
-}
+};
 
-export default App;
+export default LoginPage;

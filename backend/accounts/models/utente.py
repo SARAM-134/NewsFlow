@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings
+from news.models import Categoria
 
 class Utente(models.Model):
     """
@@ -45,4 +45,4 @@ class Utente(models.Model):
         verbose_name_plural = 'Profili Utenti'
 
     def __str__(self):
-        return f"{self.nome} {self.cognome}".strip() or str(self.auth)
+        return f"{self.nome} {self.cognome}"

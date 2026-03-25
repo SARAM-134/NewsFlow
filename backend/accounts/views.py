@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from reports.models import Report, Briefing
 from .models.auth import Auth
 from .models.utente import Utente
 from .serializers import (
@@ -56,6 +57,44 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profilo
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Override del metodo GET per includere report personali e aggregati (briefing)
+        basati sulle categorie preferite del giornalista.
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = dict(serializer.data)
+
+        # 1. Recupero gli ultimi 5 Report AI generati specificamente da questo utente
+        # Ottimizzazione: recupero anche la categoria per accedere al colore
+        last_reports = Report.objects.filter(utente=instance).select_related('notizia', 'notizia__categoria').order_by('-generato_at')[:5]
+        data['miei_report'] = [
+            {
+                'id': r.id,
+                'notizia': r.notizia.titolo,
+                'categoria': r.notizia.categoria.nome,
+                'colore_categoria': getattr(r.notizia.categoria, 'colore', '#333333'),
+                'provider': r.provider_ai,
+                'data': r.generato_at
+            } for r in last_reports
+        ]
+
+        # 2. Recupero gli ultimi Briefing (Aggregati) delle categorie seguite dall'utente
+        categorie_ids = instance.categorie_preferite.values_list('id', flat=True)
+        briefings = Briefing.objects.filter(categoria__id__in=categorie_ids).select_related('categoria').order_by('-data_creazione')[:3]
+        data['aggregati_suggeriti'] = [
+            {
+                'id': b.id,
+                'titolo': b.titolo,
+                'categoria': b.categoria.nome,
+                'colore_categoria': getattr(b.categoria, 'colore', '#333333'),
+                'anteprima': b.contenuto[:150] + "..." if b.contenuto else ""
+            } for b in briefings
+        ]
+
+        return Response(data)
 
 # --- VISTE ADMIN (GESTIONE UTENTI E SOFT DELETE) ---
 class AdminUserManagementView(generics.ListAPIView):
