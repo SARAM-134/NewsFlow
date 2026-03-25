@@ -16,10 +16,23 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Aggiungi custom claims
+        # Aggiungi custom claims al token (per decodifica lato client se necessaria)
         if hasattr(user, 'profilo'):
             token['role'] = user.profilo.role
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # ⚠️ Fondamentale per il frontend AuthContext: restituisce i dati utente nel corpo della risposta
+        if hasattr(self.user, 'profilo'):
+            data['user'] = {
+                'id': self.user.profilo.id,
+                'email': self.user.email,
+                'first_name': self.user.profilo.nome,
+                'last_name': self.user.profilo.cognome,
+                'ruolo': self.user.profilo.role
+            }
+        return data
 
 # --- SERIALIZER PROFILO NORMALE ---
 class UtenteSerializer(serializers.ModelSerializer):
