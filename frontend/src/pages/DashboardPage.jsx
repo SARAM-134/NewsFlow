@@ -128,7 +128,7 @@ const AdminIngestionSection = () => {
                   </span>
                 </td>
                 <td className="py-6 text-right">
-                  <button onClick={() => handleFetch(1)} className="text-[10px] font-bold uppercase text-blue-500 hover:scale-105 transition-transform">Fetch Now</button>
+                  <button onClick={() => handleFetch(src.id)} className="text-[10px] font-bold uppercase text-blue-500 hover:scale-105 transition-transform">Fetch Now</button>
                 </td>
               </tr>
             ))}

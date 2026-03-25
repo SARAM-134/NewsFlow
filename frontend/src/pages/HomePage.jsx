@@ -48,7 +48,8 @@ function HomePage() {
         riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
         immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500",
         sentiment: n.sentiment_ai || "neutrale",
-        textColor: n.sentiment_ai === "positivo" ? "text-green-500" : n.sentiment_ai === "negativo" ? "text-red-500" : "text-gray-500"
+        textColor: n.sentiment_ai === "positivo" ? "text-green-500" : n.sentiment_ai === "negativo" ? "text-red-500" : "text-gray-500",
+        url: n.url_originale || n.url
       }));
       setNotizie(mappedArticles);
     } catch (err) {

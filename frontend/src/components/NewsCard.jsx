@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function NewsCard({ categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5" }) {
+function NewsCard({ categoria, titolo, riassunto, immagine, themeColor = "#000000", readTime = "5", url }) {
   const [isSaved, setIsSaved] = useState(false);
 
   const toggleSave = (e) => {
@@ -8,8 +8,15 @@ function NewsCard({ categoria, titolo, riassunto, immagine, themeColor = "#00000
     setIsSaved(!isSaved);
   };
 
+  const handleClick = () => {
+    if (url) window.open(url, '_blank');
+  };
+
   return (
-    <div className="group relative min-w-[360px] bg-white flex flex-col cursor-pointer transition-all duration-700 ease-out border-b border-gray-100 pb-8 hover:border-black/10">
+    <div 
+      onClick={handleClick}
+      className="group relative min-w-[360px] bg-white flex flex-col cursor-pointer transition-all duration-700 ease-out border-b border-gray-100 pb-8 hover:border-black/10"
+    >
 
       {/* 1. IMMAGINE */}
       <div className="relative aspect-[16/9] overflow-hidden mb-6 bg-gray-50">
