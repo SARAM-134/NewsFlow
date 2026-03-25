@@ -35,12 +35,12 @@ function HomePage() {
       } else {
         setIsSearching(false);
         const params = selectedCategory ? { categoria: selectedCategory } : {};
-        const res = await getNotizie(params);
+        res = await getNotizie(params); // Assign to res
         data = res.results || res.data || res;
       }
       
       const articles = Array.isArray(data) ? data : data.results || [];
-      const mappedArticles = articles.map(n => ({
+      const mappedArticles = (res.data.results || res.data).map(n => ({
         id: n.id,
         categoria: n.categoria_dettaglio?.nome || "NEWS",
         themeColor: n.categoria_dettaglio?.colore || "#000000",
