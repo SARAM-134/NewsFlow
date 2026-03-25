@@ -27,20 +27,18 @@ function HomePage() {
   const fetchNews = async (query = '') => {
     setLoading(true);
     try {
-      let data;
+      let res;
       if (query) {
         setIsSearching(true);
-        const res = await searchSemantic(query);
-        data = res.data.results;
+        res = await searchSemantic(query);
       } else {
         setIsSearching(false);
         const params = selectedCategory ? { categoria: selectedCategory } : {};
-        res = await getNotizie(params); // Assign to res
-        data = res.results || res.data || res;
+        res = await getNotizie(params);
       }
       
-      const articles = Array.isArray(data) ? data : data.results || [];
-      const mappedArticles = (res.data.results || res.data).map(n => ({
+      const articles = res.data?.results || res.data || [];
+      const mappedArticles = (Array.isArray(articles) ? articles : []).map(n => ({
         id: n.id,
         categoria: n.categoria_dettaglio?.nome || "NEWS",
         themeColor: n.categoria_dettaglio?.colore || "#000000",
