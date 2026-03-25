@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api, { getStats, getStatsIngestion, triggerFetch, getSavedNews } from '../services/api';
 import Navbar from '../components/Navbar';
@@ -6,6 +7,7 @@ import NewsCard from '../components/NewsCard';
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [savedNews, setSavedNews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,19 +15,22 @@ const DashboardPage = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [resStats, resSaved] = await Promise.all([getStats(), getSavedNews()]);
+      // Usiamo catch individuali per evitare che il fallimento di uno blocchi l'altro
+      const resStats = await getStats().catch(e => ({ data: null }));
+      const resSaved = await getSavedNews().catch(e => ({ data: { results: [] } }));
+      
       setStats(resStats.data);
-      // Trasformiamo i dati delle notizie salvate per il componente NewsCard
-      const mapped = (resSaved.data.results || resSaved.data).map(item => {
+      
+      const mapped = (resSaved.data?.results || []).map(item => {
         const n = item.notizia_dettaglio || {};
         return {
           id: n.id,
           categoria: n.categoria_dettaglio?.nome || "NEWS",
-          themeColor: n.categoria_dettaglio?.colore || "#000000",
-          titolo: n.titolo,
+          themeColor: "#000000",
+          titolo: n.titolo || "Senza Titolo",
           riassunto: n.extract_ai || (n.contenuto_originale || "").substring(0, 100) + '...',
           immagine: n.immagine_url || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=500",
-          url: n.url_originale || n.url,
+          url: n.url_originale,
           initialIsSaved: true
         };
       });
@@ -42,9 +47,9 @@ const DashboardPage = () => {
   }, []);
 
   const statItems = [
-    { label: 'Notizie nel Catalogo', value: stats?.total_notizie || '0', color: 'bg-blue-500' },
-    { label: 'Analisi AI Completate', value: stats?.notizie_elaborate_ai || '0', color: 'bg-emerald-500' },
-    { label: 'Fonti Connesse', value: stats?.fonti_attive || '0', color: 'bg-purple-500' },
+    { label: 'Notizie nel Catalogo', value: stats?.total_notizie || '0', color: 'bg-blue-500', action: () => navigate('/') },
+    { label: 'Analisi AI Completate', value: stats?.notizie_elaborate_ai || '0', color: 'bg-emerald-500', action: () => alert("Tutti gli articoli sono stati processati con successo.") },
+    { label: 'Fonti Connesse', value: stats?.fonti_attive || '0', color: 'bg-purple-500', action: () => document.getElementById('admin-section')?.scrollIntoView({behavior: 'smooth'}) },
   ];
 
   return (
@@ -65,7 +70,11 @@ const DashboardPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {statItems.map((stat, idx) => (
-            <div key={idx} className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl transition-all duration-500 cursor-default group">
+            <div 
+              key={idx} 
+              onClick={stat.action}
+              className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-xl hover:scale-[1.02] transition-all duration-500 cursor-pointer group"
+            >
               <div>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 group-hover:text-black transition-colors">{stat.label}</p>
                 <p className="text-5xl font-serif font-medium text-gray-900">{loading ? '...' : stat.value}</p>
@@ -89,21 +98,25 @@ const DashboardPage = () => {
               savedNews.map(n => <NewsCard key={n.id} {...n} />)
             ) : (
               <div className="flex flex-col items-center justify-center w-full py-10 text-center">
-                <p className="text-gray-400 text-sm font-light italic">Nessuna notizia salvata nel tuo archivio personale.</p>
+                <p className="text-gray-400 text-sm font-light italic">Nessuna notizia nel tuo archivio personale. Salva un articolo dalla Home per vederlo qui.</p>
+                <button onClick={() => navigate('/')} className="mt-4 text-[10px] font-bold text-blue-500 uppercase tracking-widest">Esplora il catalogo</button>
               </div>
             )}
           </div>
         </div>
 
         {/* --- SEZIONE ADMIN: GESTIONE FONTI --- */}
-        {user?.ruolo === 'admin' && <AdminIngestionSection />}
+        {user?.ruolo === 'admin' && (
+          <div id="admin-section">
+            <AdminIngestionSection />
+          </div>
+        )}
 
       </div>
     </div>
   );
 };
 
-// Sotto-componente per la gestione Admin (immutato per brevità ma integrato con triggerFetch reale)
 const AdminIngestionSection = () => {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -111,7 +124,7 @@ const AdminIngestionSection = () => {
   const fetchIngestion = async () => {
     try {
       const res = await getStatsIngestion();
-      setSources(res.data.ingestion_status);
+      setSources(res.data.ingestion_status || []);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
@@ -121,9 +134,9 @@ const AdminIngestionSection = () => {
   const handleFetch = async (id) => {
     try {
       await triggerFetch(id);
-      alert("Fetch avviato!");
+      alert("Richiesta di aggiornamento inviata alla fonte.");
       fetchIngestion();
-    } catch (e) { alert("Errore nell'avvio del fetch."); }
+    } catch (e) { alert("Impossibile contattare la fonte in questo momento."); }
   };
 
   return (
@@ -143,20 +156,26 @@ const AdminIngestionSection = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {sources && sources.map((src, i) => (
-              <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                <td className="py-6 font-bold text-xs">{src.nome}</td>
-                <td className="py-6 text-xs text-gray-400 font-light">{src.ultimo_fetch ? new Date(src.ultimo_fetch).toLocaleString() : 'Mai'}</td>
-                <td className="py-6">
-                  <span className={`px-3 py-1 rounded-full text-[9px] font-bold ${src.num_errori_consecutivi > 0 ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'}`}>
-                    {src.num_errori_consecutivi > 0 ? `ERRORE (${src.num_errori_consecutivi})` : 'OK'}
-                  </span>
-                </td>
-                <td className="py-6 text-right">
-                  <button onClick={() => handleFetch(src.id)} className="text-[10px] font-bold uppercase text-blue-500 hover:scale-105 transition-transform">Fetch Now</button>
-                </td>
-              </tr>
-            ))}
+            {sources.length > 0 ? (
+              sources.map((src, i) => (
+                <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="py-6 font-bold text-xs">{src.nome}</td>
+                  <td className="py-6 text-xs text-gray-400 font-light">{src.ultimo_fetch ? new Date(src.ultimo_fetch).toLocaleString() : 'Mai'}</td>
+                  <td className="py-6">
+                    <span className={`px-3 py-1 rounded-full text-[9px] font-bold ${src.num_errori_consecutivi > 0 ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'}`}>
+                      {src.num_errori_consecutivi > 0 ? `ERRORE (${src.num_errori_consecutivi})` : 'OK'}
+                    </span>
+                  </td>
+                  <td className="py-6 text-right">
+                    <button onClick={() => handleFetch(src.id)} className="text-[10px] font-bold uppercase text-blue-500 hover:scale-105 transition-transform">Fetch Now</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+                <tr>
+                  <td colSpan="4" className="py-10 text-center text-gray-400 italic text-sm font-light">Nessuna fonte configurata nel sistema.</td>
+                </tr>
+            )}
           </tbody>
         </table>
       </div>

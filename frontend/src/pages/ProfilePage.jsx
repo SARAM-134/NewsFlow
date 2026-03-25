@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 const ProfilePage = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [profileData, setProfileData] = useState({ first_name: '', last_name: '', email: '', ruolo: '' });
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -17,18 +18,27 @@ const ProfilePage = () => {
         const [resCat, resProf] = await Promise.all([getCategories(), getProfile()]);
         setCategories(resCat.data.results || resCat.data);
         setProfileData(resProf.data);
+        // Pre-carica le categorie preferite dall'utente
+        setSelectedCategories(resProf.data.categorie_preferite || []);
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
     };
     fetchData();
   }, []);
 
+  const handleToggleCategory = (id) => {
+    setSelectedCategories(prev => 
+      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    );
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
       await updateProfile({ 
         first_name: profileData.first_name, 
-        last_name: profileData.last_name 
+        last_name: profileData.last_name,
+        categorie_preferite: selectedCategories
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -86,24 +96,28 @@ const ProfilePage = () => {
             {success && <p className="text-green-500 font-bold text-[10px] uppercase tracking-widest animate-fade-in mt-4 italic">✓ Modifiche salvate con successo</p>}
           </div>
 
-          {/* Categorie Preferite (Placeholder UI) */}
+          {/* Categorie Preferite Reali */}
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300 block mb-8">Interessi & Categorie</label>
-            <div className="grid grid-cols-1 gap-4 opacity-70">
-              {categories.map((cat) => (
-                <div 
-                  key={cat.id} 
-                  className="flex items-center justify-between p-6 bg-gray-50 rounded-none border-l-4 border-transparent hover:border-black transition-all cursor-default group"
-                >
-                  <span className="text-xs font-bold uppercase tracking-widest text-gray-600">{cat.nome}</span>
-                  <div className="w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-gray-200" />
+            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300 block mb-8">Interessi & Categorie (Seleziona)</label>
+            <div className="grid grid-cols-1 gap-4">
+              {categories.map((cat) => {
+                const isActive = selectedCategories.includes(cat.id);
+                return (
+                  <div 
+                    key={cat.id} 
+                    onClick={() => handleToggleCategory(cat.id)}
+                    className={`flex items-center justify-between p-6 rounded-none border-l-4 transition-all cursor-pointer group ${isActive ? 'bg-black border-black text-white' : 'bg-gray-50 border-transparent text-gray-600 hover:border-gray-200'}`}
+                  >
+                    <span className={`text-xs font-bold uppercase tracking-widest ${isActive ? 'text-white' : 'text-gray-600'}`}>{cat.nome}</span>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isActive ? 'border-white/20' : 'border-gray-200'}`}>
+                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]" />}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <p className="mt-8 text-[9px] text-gray-400 uppercase tracking-widest italic leading-relaxed">
-              Il filtraggio automatico tramite AI sarà basato su queste preferenze nella fase 2 di NewsFlow.
+              Il tuo feed personalizzato utilizzerà queste categorie per dare priorità alle notizie rilevanti.
             </p>
           </div>
         </section>
