@@ -56,6 +56,9 @@ const Navbar = () => {
                   <Link to="/dashboard" className="text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors">
                     Dashboard
                   </Link>
+                  <Link to="/profile" className="text-xs font-bold uppercase tracking-widest hover:text-gray-600 transition-colors">
+                    Profilo
+                  </Link>
                   <button 
                     onClick={handleLogout}
                     className="text-xs font-bold uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors"
