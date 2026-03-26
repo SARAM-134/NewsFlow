@@ -7,48 +7,7 @@ from news.models import Notizia, Tag
 
 from news.ai_utils import call_ai, get_active_ai_config
 
-def get_embedding(text: str, api_key: str) -> list:
-    """
-    Genera un vettore embedding per il testo fornito usando Google Gemini.
-    """
-    if not api_key:
-        return None
-    
-    try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        # Usiamo il modello di embedding standard di Google
-        result = genai.embed_content(
-            model="models/gemini-embedding-001",
-            content=text,
-            task_type="retrieval_document",
-            title="NewsFlow Article"
-        )
-        return result['embedding']
-    except Exception:
-        return None
-
-
-def get_embedding(text: str, api_key: str) -> list:
-    """
-    Genera un vettore embedding per il testo fornito usando Google Gemini.
-    """
-    if not api_key:
-        return None
-    
-    try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        # Usiamo il modello di embedding standard di Google
-        result = genai.embed_content(
-            model="models/gemini-embedding-001",
-            content=text,
-            task_type="retrieval_document",
-            title="NewsFlow Article"
-        )
-        return result['embedding']
-    except Exception:
-        return None
+from news.ai_utils import call_ai, get_active_ai_config, get_embedding_standard
 
 
 class Command(BaseCommand):
@@ -141,13 +100,13 @@ class Command(BaseCommand):
                     notizia.provider_ai = active_provider
                     notizia.ai_processata = True
                     
-                    # Generazione Embedding (Solo se il provider è Gemini, altrimenti fallback)
-                    if active_provider == 'gemini':
-                        self.stdout.write("    → Generazione embedding...")
-                        # Embed diamo un mix di titolo e contenuto per catturare il concetto
-                        text_to_embed = f"{notizia.titolo}. {notizia.contenuto_originale[:500]}"
-                        notizia.vettore_embedding = get_embedding(text_to_embed, active_key)
-
+                    # Generazione Embedding
+                    full_text = f"{notizia.titolo}. {notizia.contenuto_originale[:500]}"
+                    self.stdout.write("    → Generazione embedding...")
+                    embedding = get_embedding_standard(full_text)
+                    if embedding:
+                        notizia.vettore_embedding = embedding
+                    
                     notizia.save()
 
                     # Tags

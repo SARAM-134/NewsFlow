@@ -101,7 +101,7 @@ const Navbar = () => {
             ) : (
               <>
                 <div className="mb-6">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-2 block">Premium Insight</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2 block italic">Premium Insight</span>
                   <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">Iscriviti alla Newsletter</h3>
                   <p className="text-sm text-gray-500 font-light leading-relaxed">Ricevi ogni mattina il riassunto intelligente delle notizie più importanti.</p>
                 </div>

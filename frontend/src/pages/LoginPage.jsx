@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 
@@ -7,15 +7,28 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   
   const { loginUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('registered')) {
+      setSuccess('Registrazione completata con successo! Accedi ora.');
+    }
+    if (params.get('expired')) {
+      setError('La sessione è scaduta. Per favore, effettua di nuovo l\'accesso.');
+    }
+  }, [location]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
     try {
       await loginUser({ email, password });
       navigate('/dashboard');
@@ -39,6 +52,12 @@ const LoginPage = () => {
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-500 text-xs rounded-lg animate-fade-in">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 text-xs rounded-lg animate-fade-in">
+              {success}
             </div>
           )}
 
@@ -74,7 +93,10 @@ const LoginPage = () => {
             </button>
           </form>
           
-          <div className="mt-10 text-center">
+          <div className="mt-10 text-center flex flex-col gap-4">
+            <button onClick={() => navigate('/register')} className="text-[10px] font-bold uppercase tracking-widest text-black border-b border-black hover:text-gray-600 transition-colors pb-1 self-center">
+              Crea un nuovo account
+            </button>
             <button onClick={() => navigate('/')} className="text-[10px] font-bold uppercase tracking-widest text-gray-300 hover:text-black transition-colors">
               Torna alla Home
             </button>

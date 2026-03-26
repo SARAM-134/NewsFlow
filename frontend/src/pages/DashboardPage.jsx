@@ -47,9 +47,9 @@ const DashboardPage = () => {
   }, []);
 
   const statItems = [
-    { label: 'Notizie nel Catalogo', value: stats?.total_notizie || '0', color: 'bg-blue-500', action: () => navigate('/') },
-    { label: 'Analisi AI Completate', value: stats?.notizie_elaborate_ai || '0', color: 'bg-emerald-500', action: () => alert("Tutti gli articoli sono stati processati con successo.") },
-    { label: 'Fonti Connesse', value: stats?.fonti_attive || '0', color: 'bg-purple-500', action: () => document.getElementById('admin-section')?.scrollIntoView({behavior: 'smooth'}) },
+    { label: 'Notizie nel Catalogo', value: stats?.total_notizie || '0', color: 'bg-black', action: () => navigate('/') },
+    { label: 'Analisi AI Completate', value: stats?.notizie_elaborate_ai || '0', color: 'bg-emerald-600', action: () => alert("Tutti gli articoli sono stati processati con successo.") },
+    { label: 'Fonti Connesse', value: stats?.fonti_attive || '0', color: 'bg-gray-800', action: () => document.getElementById('admin-section')?.scrollIntoView({behavior: 'smooth'}) },
   ];
 
   return (
@@ -64,7 +64,7 @@ const DashboardPage = () => {
           </h1>
           <p className="text-[10px] text-gray-400 mt-4 uppercase tracking-[0.3em] flex items-center gap-2 font-bold">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            Panoramica {user?.ruolo || 'Utente'}
+            Panoramica {user?.role || 'Utente'}
           </p>
         </div>
 
@@ -95,23 +95,122 @@ const DashboardPage = () => {
           
           <div className="flex gap-8 overflow-x-auto scrollbar-hide pb-6 px-2">
             {savedNews.length > 0 ? (
-              savedNews.map(n => <NewsCard key={n.id} {...n} />)
+              savedNews.map(n => (
+                <NewsCard 
+                  key={n.id} 
+                  {...n} 
+                  onSaveToggle={(id, isSaved) => {
+                    if (!isSaved) {
+                      setSavedNews(prev => prev.filter(item => item.id !== id));
+                    }
+                  }} 
+                />
+              ))
             ) : (
               <div className="flex flex-col items-center justify-center w-full py-10 text-center">
                 <p className="text-gray-400 text-sm font-light italic">Nessuna notizia nel tuo archivio personale. Salva un articolo dalla Home per vederlo qui.</p>
-                <button onClick={() => navigate('/')} className="mt-4 text-[10px] font-bold text-blue-500 uppercase tracking-widest">Esplora il catalogo</button>
+                <button onClick={() => navigate('/')} className="mt-4 text-[10px] font-bold text-black border-b border-black uppercase tracking-widest">Esplora il catalogo</button>
               </div>
             )}
           </div>
         </div>
 
-        {/* --- SEZIONE ADMIN: GESTIONE FONTI --- */}
-        {user?.ruolo === 'admin' && (
-          <div id="admin-section">
+        {/* --- SEZIONE ADMIN: GESTIONE --- */}
+        {user?.role === 'admin' && (
+          <div id="admin-section" className="space-y-12">
             <AdminIngestionSection />
+            <AdminCategorySection />
           </div>
         )}
 
+      </div>
+    </div>
+  );
+};
+
+const AdminCategorySection = () => {
+  const [categories, setCategories] = useState([]);
+  const [newCat, setNewCat] = useState({ nome: '', colore: '#3B82F6' });
+  const [loading, setLoading] = useState(true);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await api.get('categorie/');
+      setCategories(res.data.results || res.data || []);
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { fetchCategories(); }, []);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      // Nota: Il backend si aspetta 'slug', lo generiamo dal nome
+      const slug = newCat.nome.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+      await api.post('categorie/', { ...newCat, slug });
+      setNewCat({ nome: '', colore: '#3B82F6' });
+      fetchCategories();
+    } catch (e) { alert("Errore creazione categoria."); }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Sei sicuro di voler eliminare questa categoria?")) return;
+    try {
+      await api.delete(`categorie/${id}/`);
+      fetchCategories();
+    } catch (e) { alert("Impossibile eliminare la categoria."); }
+  };
+
+  return (
+    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12">
+      <div className="flex items-center justify-between mb-10 border-b border-gray-50 pb-8">
+        <h2 className="text-xl font-bold tracking-tight uppercase text-black">Gestione Categorie (Admin)</h2>
+        <button onClick={fetchCategories} className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors">🔄 Aggiorna</button>
+      </div>
+
+      <form onSubmit={handleCreate} className="mb-12 flex flex-wrap gap-4 items-end bg-gray-50 p-6 rounded-2xl">
+        <div className="flex-1 min-w-[200px]">
+          <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Nuova Categoria</label>
+          <input 
+            type="text" 
+            placeholder="Esempio: Innovazione" 
+            value={newCat.nome}
+            onChange={(e) => setNewCat({...newCat, nome: e.target.value})}
+            className="w-full p-4 bg-white border border-gray-100 rounded-xl text-xs focus:ring-2 focus:ring-black outline-none"
+            required
+          />
+        </div>
+        <div>
+          <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">Colore</label>
+          <input 
+            type="color" 
+            value={newCat.colore}
+            onChange={(e) => setNewCat({...newCat, colore: e.target.value})}
+            className="w-16 h-12 p-1 bg-white border border-gray-100 rounded-xl cursor-pointer"
+          />
+        </div>
+        <button type="submit" className="bg-black text-white px-8 h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-all">Aggiungi</button>
+      </form>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {categories.map(cat => (
+          <div key={cat.id} className="group relative bg-gray-50 p-6 rounded-2xl border border-transparent hover:border-gray-200 transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.colore }}></div>
+              <h3 className="font-bold text-xs uppercase tracking-wider">{cat.nome}</h3>
+            </div>
+            <div className="flex justify-between items-center">
+               <span className="text-[9px] text-gray-400 font-mono italic">#{cat.slug}</span>
+               <button 
+                 onClick={() => handleDelete(cat.id)}
+                 className="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-red-400 hover:text-red-600 transition-all uppercase tracking-widest"
+               >
+                 Elimina
+               </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -142,8 +241,8 @@ const AdminIngestionSection = () => {
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12">
       <div className="flex items-center justify-between mb-10 border-b border-gray-50 pb-8">
-        <h2 className="text-xl font-bold tracking-tight uppercase text-blue-600">Gestione Ingestion (Admin)</h2>
-        <button onClick={fetchIngestion} className="text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:text-black transition-colors">🔄 Aggiorna</button>
+        <h2 className="text-xl font-bold tracking-tight uppercase text-black">Gestione Ingestion (Admin)</h2>
+        <button onClick={fetchIngestion} className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors">🔄 Aggiorna</button>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left">
@@ -167,7 +266,7 @@ const AdminIngestionSection = () => {
                     </span>
                   </td>
                   <td className="py-6 text-right">
-                    <button onClick={() => handleFetch(src.id)} className="text-[10px] font-bold uppercase text-blue-500 hover:scale-105 transition-transform">Fetch Now</button>
+                    <button onClick={() => handleFetch(src.id)} className="text-[10px] font-bold uppercase text-black border border-black px-4 py-2 hover:bg-black hover:text-white transition-all">Fetch Now</button>
                   </td>
                 </tr>
               ))

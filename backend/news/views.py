@@ -39,10 +39,15 @@ class NotiziaListView(generics.ListAPIView):
         queryset = Notizia.objects.select_related('categoria', 'fonte').prefetch_related('tags').all()
         
         # Filtri custom via Query Params
-        categoria_id = self.request.query_params.get('categoria')
+        categoria_ids = self.request.query_params.get('categoria')
         fonte_id = self.request.query_params.get('fonte')
-        if categoria_id:
-            queryset = queryset.filter(categoria_id=categoria_id)
+        
+        if categoria_ids:
+            # Supporta categoria=1 o categoria=1,2,3
+            ids = [id.strip() for id in categoria_ids.split(',') if id.strip().isdigit()]
+            if ids:
+                queryset = queryset.filter(categoria_id__in=ids)
+        
         if fonte_id:
             queryset = queryset.filter(fonte_id=fonte_id)
             
@@ -68,59 +73,99 @@ class SemanticSearchView(APIView):
         if not query:
             return Response({"error": "Parametro 'q' mancante"}, status=400)
 
-        # 1. Configura Gemini per l'embedding della query
-        api_key = settings.AI_CONFIG.get('GEMINI_API_KEY')
-        if not api_key:
-            return Response({"error": "AI non configurata sul server"}, status=500)
-        
         try:
-            genai.configure(api_key=api_key)
-            result = genai.embed_content(
-                model="models/gemini-embedding-001",
-                content=query,
-                task_type="retrieval_query"
-            )
-            query_embedding = np.array(result['embedding'])
+            from .ai_utils import get_embedding_standard
+            embedding_list = get_embedding_standard(query)
+            
+            if not embedding_list:
+                return self.keyword_search_fallback(query, request)
+            
+            query_embedding = np.array(embedding_list)
 
             # 2. Recupera notizie che hanno un embedding
-            notizie_con_vettore = Notizia.objects.exclude(vettore_embedding__isnull=True)
-            if not notizie_con_vettore.exists():
-                return Response({"results": [], "message": "Nessun dato vettoriale disponibile per la ricerca."})
+            # Carichiamo solo i campi necessari per velocità
+            notizie_qs = Notizia.objects.exclude(vettore_embedding__isnull=True).only('id', 'vettore_embedding')
+            
+            if not notizie_qs.exists():
+                return self.keyword_search_fallback(query, request)
 
-            # 3. Calcolo Similarità (Cosine Similarity)
-            results = []
-            for notizia in notizie_con_vettore:
-                notizia_vec = np.array(notizia.vettore_embedding)
-                
-                # Formula similarità coseno: (A dot B) / (||A|| * ||B||)
-                norm_q = np.linalg.norm(query_embedding)
-                norm_n = np.linalg.norm(notizia_vec)
-                
-                if norm_q > 0 and norm_n > 0:
-                    similarity = np.dot(query_embedding, notizia_vec) / (norm_q * norm_n)
-                    results.append({
-                        'notizia': notizia,
-                        'score': float(similarity)
-                    })
+            # 3. Calcolo Similarità massivo con Numpy (Ottimizzato)
+            # Estraggono tutti i vettori in una matrice
+            vectors = []
+            valid_ids = []
+            for n in notizie_qs:
+                if n.vettore_embedding and len(n.vettore_embedding) == len(query_embedding):
+                    vectors.append(n.vettore_embedding)
+                    valid_ids.append(n.id)
+            
+            if not vectors:
+                return self.keyword_search_fallback(query, request)
 
-            # 4. Ordina per score decrescente e prendi i primi 10
-            results.sort(key=lambda x: x['score'], reverse=True)
-            top_results = results[:10]
+            # Trasformiamo in array numpy
+            matrix = np.array(vectors) # (N, Dim)
+            
+            # Normalizzazione query
+            norm_q = np.linalg.norm(query_embedding)
+            if norm_q == 0: return self.keyword_search_fallback(query, request)
+            
+            # Normalizzazione matrice (lungo l'asse degli embedding)
+            norms_n = np.linalg.norm(matrix, axis=1)
+            
+            # Calcolo similarità coseno vettorializzato: (Matrix @ q) / (norms_n * norm_q)
+            # Evitiamo divisioni per zero
+            norms_n[norms_n == 0] = 1.0
+            similarities = np.dot(matrix, query_embedding) / (norms_n * norm_q)
+
+            # 4. Associa ID e Score e ordina
+            score_map = {valid_ids[i]: float(similarities[i]) for i in range(len(valid_ids))}
+            
+            # Recupera le notizie reali ordinate per score (limit 15)
+            top_ids = sorted(score_map, key=score_map.get, reverse=True)[:15]
+            top_notizie = Notizia.objects.filter(id__in=top_ids).select_related('categoria', 'fonte').prefetch_related('tags')
+            
+            # Manteniamo l'ordine dello score
+            sorted_results = sorted(
+                top_notizie, 
+                key=lambda x: score_map.get(x.id, 0), 
+                reverse=True
+            )
 
             # 5. Serializzazione
             serialized_data = []
-            for item in top_results:
-                data = NotiziaSerializer(item['notizia'], context={'request': request}).data
-                data['similarity_score'] = item['score']
+            for notizia in sorted_results:
+                data = NotiziaSerializer(notizia, context={'request': request}).data
+                data['similarity_score'] = score_map.get(notizia.id, 0)
                 serialized_data.append(data)
 
             return Response({
                 "query": query,
-                "results": serialized_data
+                "results": serialized_data,
+                "type": "semantic",
+                "count": len(serialized_data)
             })
 
         except Exception as e:
-            return Response({"error": f"Errore durante la ricerca semantica: {str(e)}"}, status=500)
+            print(f"Errore Ricerca Semantica: {e}")
+            return self.keyword_search_fallback(query, request)
+
+    def keyword_search_fallback(self, query, request):
+        """Ricerca tradizionale basata su keywords se l'AI fallisce."""
+        from django.db.models import Q
+        notizie = Notizia.objects.filter(
+            Q(titolo__icontains=query) | 
+            Q(contenuto_originale__icontains=query) |
+            Q(extract_ai__icontains=query)
+        ).select_related('categoria', 'fonte')[:15]
+        
+        serialized_data = NotiziaSerializer(notizie, many=True, context={'request': request}).data
+        for item in serialized_data:
+            item['similarity_score'] = 1.0 # Score fittizio
+            
+        return Response({
+            "query": query,
+            "results": serialized_data,
+            "type": "keyword_fallback"
+        })
 
 
 # --- VISTE ADMIN (Gestione Contenuti) ---

@@ -2,26 +2,35 @@ import React, { useRef, useState, useEffect } from 'react';
 import api, { getNotizie, getCategories, searchSemantic } from '../services/api';
 import Navbar from '../components/Navbar';
 import NewsCard from '../components/NewsCard';
+import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
+  const { user } = useAuth();
   const scrollRef = useRef(null);
   const [notizie, setNotizie] = useState([]);
   const [categorie, setCategorie] = useState([]);
+  const [fonti, setFonti] = useState([]); // Aggiunto
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSource, setSelectedSource] = useState(null); // Aggiunto
+  const [isPersonalized, setIsPersonalized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await getCategories();
-        setCategorie(response.data.results || response.data);
+        const [resCat, resFonti] = await Promise.all([
+          api.get('categorie/'),
+          api.get('fonti/')
+        ]);
+        setCategorie(resCat.data.results || resCat.data);
+        setFonti(resFonti.data.results || resFonti.data);
       } catch (error) {
-        console.error("Errore caricamento categorie:", error);
+        console.error("Errore caricamento filtri:", error);
       }
     };
-    fetchCategories();
+    fetchData();
   }, []);
 
   const fetchNews = async (query = '') => {
@@ -33,13 +42,32 @@ function HomePage() {
         res = await searchSemantic(query);
       } else {
         setIsSearching(false);
-        const params = selectedCategory ? { categoria: selectedCategory } : {};
+        const params = {};
+        if (selectedCategory) {
+          params.categoria = selectedCategory;
+        } else if (isPersonalized && user?.categorie_preferite?.length > 0) {
+          params.categoria = user.categorie_preferite.join(',');
+        }
+        
+        if (selectedSource) {
+          params.fonte = selectedSource;
+        }
         res = await getNotizie(params);
       }
       
       const articles = res.data?.results || res.data || [];
-      const mappedArticles = (Array.isArray(articles) ? articles : []).map(n => ({
+      // ... rest of the mapping logic
+      const sortedArticles = (Array.isArray(articles) ? articles : []).sort((a, b) => {
+        const aHasImg = !!a.immagine_url;
+        const bHasImg = !!b.immagine_url;
+        if (aHasImg && !bHasImg) return -1;
+        if (!aHasImg && bHasImg) return 1;
+        return 0;
+      });
+
+      const mappedArticles = sortedArticles.map(n => ({
         id: n.id,
+        url_hash: n.url_hash, // Aggiunto
         categoria: n.categoria_dettaglio?.nome || "NEWS",
         themeColor: n.categoria_dettaglio?.colore || "#000000",
         titolo: n.titolo,
@@ -59,7 +87,7 @@ function HomePage() {
 
   useEffect(() => {
     if (!searchQuery) fetchNews();
-  }, [selectedCategory, searchQuery === '']);
+  }, [selectedCategory, selectedSource, searchQuery === '', isPersonalized]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -96,31 +124,62 @@ function HomePage() {
             </button>
           </form>
           {isSearching && (
-            <button onClick={() => { setSearchQuery(''); setSelectedCategory(null); }} className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
+            <button onClick={() => { setSearchQuery(''); setSelectedCategory(null); setSelectedSource(null); }} className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
               Annulla Ricerca
             </button>
           )}
         </div>
 
         {/* --- FILTRI CATEGORIE --- */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-20">
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
           <button
-            onClick={() => setSelectedCategory(null)}
+            onClick={() => { setSelectedCategory(null); setSelectedSource(null); setIsPersonalized(false); }}
             className={`px-6 py-2 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] transition-all ${
-              !selectedCategory ? 'bg-black text-white shadow-lg' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+              !selectedCategory && !selectedSource && !isPersonalized ? 'bg-black text-white shadow-lg' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
             }`}
           >
             Tutte
           </button>
+          
+          {user && (
+            <button
+              onClick={() => { setSelectedCategory(null); setSelectedSource(null); setIsPersonalized(true); }}
+              className={`px-6 py-2 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${
+                isPersonalized 
+                  ? 'bg-black text-white shadow-xl' 
+                  : 'bg-gray-50 text-gray-400 hover:bg-white hover:shadow-md hover:text-black'
+              }`}
+            >
+              <span className={isPersonalized ? 'text-white' : 'text-gray-300 group-hover:text-black'}>★</span>
+              Per Te
+            </button>
+          )}
+
           {categorie.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
+              onClick={() => { setSelectedCategory(cat.id); setSelectedSource(null); setIsPersonalized(false); }}
               className={`px-6 py-2 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] transition-all ${
                 selectedCategory === cat.id ? 'bg-black text-white shadow-lg' : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
               }`}
             >
               {cat.nome}
+            </button>
+          ))}
+        </div>
+
+        {/* --- FILTRI FONTI --- */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-20 opacity-60 hover:opacity-100 transition-opacity">
+          <span className="text-[8px] font-bold uppercase tracking-widest text-gray-300 mr-2">Filtra per Fonte:</span>
+          {fonti.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => { setSelectedSource(f.id); setSelectedCategory(null); setIsPersonalized(false); }}
+              className={`px-4 py-1.5 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all border ${
+                selectedSource === f.id ? 'border-black bg-black text-white' : 'border-gray-100 text-gray-400 hover:border-gray-300'
+              }`}
+            >
+              {f.nome}
             </button>
           ))}
         </div>
